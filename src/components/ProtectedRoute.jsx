@@ -12,7 +12,7 @@ function ProtectedRoute({ children }) {
     }
 
     // 验证token是否有效
-    fetch("http://localhost:8080/verify", {
+    fetch("http://3.14.158.200:8080/verify", {
       headers: {
         "Authorization": `Bearer ${token}`
       }

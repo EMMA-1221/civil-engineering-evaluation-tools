@@ -53,7 +53,7 @@ function Login() {
       : { username: username.trim(), email: email.trim(), password };
 
     try {
-      const response = await fetch(`http://localhost:8080${endpoint}`, {
+      const response = await fetch(`http://3.14.158.200:8080${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
