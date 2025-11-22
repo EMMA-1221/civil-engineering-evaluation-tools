@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";  // ← 添加这行
 
 function ProtectedRoute({ children }) {
   const [isVerified, setIsVerified] = useState(null);
@@ -12,7 +13,8 @@ function ProtectedRoute({ children }) {
     }
 
     // 验证token是否有效
-    fetch("http://3.14.158.200:8080/verify", {
+    // ← 这里改了
+    fetch(`${API_BASE_URL}/verify`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }

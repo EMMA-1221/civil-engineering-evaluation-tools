@@ -1,273 +1,220 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 
 function Home() {
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
 
   return (
-    <div style={styles.page}>
-      {/* 顶部介绍 */}
-      <h2 style={styles.heroTitle}>
-        Data-Driven Insights for Smarter Construction Decisions
-      </h2>
-      <p style={styles.heroText}>
-        A collection of analytical tools developed by <strong>Dr. Hanna's Civil Engineering Research Group</strong> 
-        to support bid evaluation and productivity performance analysis in complex construction projects.
-      </p>
+    <div style={styles.pageWrapper}>
+      <Container style={{ paddingTop: "3rem", paddingBottom: "3rem" }}>
 
-      {/* 登录状态提示 */}
-      {!user && (
-        <div style={styles.loginPrompt}>
-          <p style={styles.promptText}>
-            🔒 Please <Link to="/login" style={styles.promptLink}>login</Link> to access all tools and save your data.
-          </p>
-        </div>
-      )}
+        {/* ---------- Title ---------- */}
+        <h2 style={styles.heroTitle}>
+          Data-Driven Insights for Smarter Construction Decisions
+        </h2>
 
-      {user && (
-        <div style={styles.welcomeMessage}>
-          <p style={styles.welcomeText}>
+        <p style={styles.heroText}>
+          A collection of analytical tools developed by <strong>HCG WAY</strong>  
+          to support advanced decision making in complex construction projects.
+        </p>
+
+        {/* ---------- Login / Welcome ---------- */}
+        {!user ? (
+          <div style={styles.alertBoxYellow}>
+            🔒 Please <Link to="/login" style={styles.alertLink}>login</Link> to access all tools.
+          </div>
+        ) : (
+          <div style={styles.alertBoxGreen}>
             👋 Welcome back, <strong>{user.username}</strong>! You have full access to all tools.
-          </p>
-        </div>
-      )}
+          </div>
+        )}
 
-      {/* 工具卡片区域 */}
-      <div style={styles.toolContainer}>
-        {/* BID Tool */}
-        <div style={styles.card}>
-          <div style={styles.cardHeader}>
-            <span style={styles.cardIcon}>📊</span>
-            <h3 style={styles.cardTitle}>BID Evaluation Tool</h3>
-          </div>
-          <p style={styles.cardText}>
-            Analyze bid factors including design relationships, risk, and preparedness 
-            to guide data-informed project bidding.
-          </p>
-          <Link to="/bid" style={styles.button}>
-            {user ? "Open Tool →" : "Login to Access →"}
-          </Link>
-        </div>
+        {/* ---------- Cards Row ---------- */}
+        <Row className="mt-5 g-4">
 
-        {/* Productivity Tool */}
-        <div style={styles.proSection}>
-          <div style={styles.proHeader}>
-            <span style={styles.proIcon}>⚡</span>
-            <h1 style={styles.proTitle}>
-              FACTORS AFFECTING LABOR PRODUCTIVITY <br /> FOR ELECTRICAL CONTRACTORS
-            </h1>
-          </div>
-          <h2 style={styles.proSubtitle}>
-            <em>A Quantified Statistical Approach</em>
-          </h2>
-          
-          <Link to="/factors" style={styles.inputButton}>
-            Input Your Factors →
-          </Link>
-          
-          <div style={styles.buttonRow}>
-            <Link to="/proactive" style={styles.redButton}>
-              Proactive Calculation for Productivity Loss
-            </Link>
-            <Link to="/retroactive" style={styles.blueButton}>
-              Retroactive Calculation for Productivity Loss
-            </Link>
-          </div>
-        </div>
-      </div>
+          {/* ---------------- BID CARD ---------------- */}
+          <Col xs={12} md={6}>
+            <Card style={styles.metalCard} className="shadow-lg">
+              <Card.Body>
+                <div style={styles.cardHeader}>
+                  <span style={styles.cardIcon}>📊</span>
+                  <Card.Title style={styles.cardTitle}>To BID or Not to BID?</Card.Title>
+                </div>
+
+                <Card.Text style={styles.cardText}>
+                  Analyze bid factors including design relationships, risk, and preparedness  
+                  to guide data-informed project bidding.
+                </Card.Text>
+
+                <Button
+                  as={Link}
+                  to="/bid"
+                  style={styles.metalButton}
+                >
+                  {user ? "Open Tool →" : "Login to Access →"}
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          {/* ---------------- PRODUCTIVITY CARD ---------------- */}
+          <Col xs={12} md={6}>
+            <Card style={styles.metalCard} className="shadow-lg">
+              <Card.Body>
+                <div style={styles.cardHeader}>
+                  <span style={styles.cardIcon}>⚡</span>
+                  <Card.Title style={styles.cardTitle}>
+                    FACTORS AFFECTING LABOR PRODUCTIVITY<br />
+                    FOR ELECTRICAL CONTRACTORS
+                  </Card.Title>
+                </div>
+
+                <Card.Subtitle style={styles.cardSubtitle}>
+                  <em>A Quantified Statistical Approach</em>
+                </Card.Subtitle>
+
+                <Button as={Link} to="/factors" style={styles.metalButtonBlue} className="mt-3">
+                  Input Your Factors →
+                </Button>
+
+                <div className="d-grid gap-3 mt-4">
+                  <Button as={Link} to="/proactive" style={styles.redButton}>
+                    Proactive Calculation for Productivity Loss
+                  </Button>
+                  <Button as={Link} to="/retroactive" style={styles.blueButton}>
+                    Retroactive Calculation for Productivity Loss
+                  </Button>
+                </div>
+
+              </Card.Body>
+            </Card>
+          </Col>
+
+        </Row>
+      </Container>
     </div>
   );
 }
 
 const styles = {
-  page: {
-    backgroundColor: "#f8fafc",
+  /* ---------------- Background ---------------- */
+  pageWrapper: {
     minHeight: "100vh",
-    fontFamily: "Segoe UI, Arial, sans-serif",
-    color: "#333",
-    textAlign: "center",
-    padding: "3rem 2rem",
+    background: "linear-gradient(180deg, #e8f1fb 0%, #c5d4ea 100%)",
   },
+
+  /* ---------------- Title ---------------- */
   heroTitle: {
-    fontSize: "1.8rem",
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: "2rem",
+    fontWeight: "700",
+    textAlign: "center",
     color: "#002b5c",
-    fontWeight: "600",
-    marginBottom: "1rem",
   },
   heroText: {
-    fontSize: "1rem",
+    maxWidth: "720px",
+    margin: "0 auto",
+    textAlign: "center",
     color: "#444",
-    maxWidth: "700px",
-    margin: "0 auto 2rem auto",
-    lineHeight: "1.6",
   },
-  
-  // 登录提示
-  loginPrompt: {
-    backgroundColor: "#fff3cd",
-    border: "2px solid #ffc107",
+
+  /* ---------------- Alerts ---------------- */
+  alertBoxYellow: {
+    background: "#fff8d5",
+    border: "1px solid #ffda6b",
     borderRadius: "10px",
     padding: "1rem",
     maxWidth: "600px",
-    margin: "0 auto 2rem auto",
+    margin: "2rem auto",
+    textAlign: "center",
   },
-  promptText: {
-    margin: 0,
-    color: "#856404",
-    fontSize: "1rem",
-    fontWeight: "500",
+  alertBoxGreen: {
+    background: "#d4f5dc",
+    border: "1px solid #57c27e",
+    borderRadius: "10px",
+    padding: "1rem",
+    maxWidth: "600px",
+    margin: "2rem auto",
+    textAlign: "center",
   },
-  promptLink: {
-    color: "#002b5c",
+  alertLink: {
     fontWeight: "700",
+    color: "#002b5c",
     textDecoration: "underline",
   },
-  
-  // 欢迎消息
-  welcomeMessage: {
-    backgroundColor: "#d4edda",
-    border: "2px solid #28a745",
-    borderRadius: "10px",
+
+  /* ---------------- Chrome Metal Card ---------------- */
+  metalCard: {
+    borderRadius: "16px",
     padding: "1rem",
-    maxWidth: "600px",
-    margin: "0 auto 2rem auto",
-  },
-  welcomeText: {
-    margin: 0,
-    color: "#155724",
-    fontSize: "1rem",
-    fontWeight: "500",
-  },
-
-  // 工具卡片容器
-  toolContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "stretch",
-    gap: "2.5rem",
-    flexWrap: "wrap",
-    marginTop: "2rem",
+    background: `
+      linear-gradient(160deg,
+        rgba(255,255,255,0.95) 0%,
+        rgba(230,230,230,0.75) 40%,
+        rgba(255,255,255,0.95) 60%,
+        rgba(180,180,180,0.65) 100%
+      )
+    `,
+    backdropFilter: "blur(6px)",
+    border: "1px solid rgba(255,255,255,0.7)",
+    boxShadow:
+      "inset 0 0 25px rgba(255,255,255,0.35), 0 10px 25px rgba(0,0,0,0.15)",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    cursor: "pointer",
   },
 
-  // BID Tool 卡片
-  card: {
-    flex: "1 1 420px",
-    background: "white",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    borderRadius: "12px",
-    padding: "2rem",
-    textAlign: "left",
-    maxWidth: "480px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
+  /* ---------------- Inside Card ---------------- */
   cardHeader: {
     display: "flex",
     alignItems: "center",
-    gap: "0.8rem",
+    gap: "0.7rem",
     marginBottom: "1rem",
   },
-  cardIcon: {
-    fontSize: "2rem",
-  },
+  cardIcon: { fontSize: "2rem" },
   cardTitle: {
+    fontFamily: "'Exo 2', sans-serif",
     fontSize: "1.3rem",
-    color: "#002b5c",
-    margin: 0,
+    fontWeight: "700",
+    color: "#0a2540",
   },
   cardText: {
+    color: "#444",
     fontSize: "1rem",
-    color: "#555",
     marginBottom: "1.5rem",
-    lineHeight: "1.6",
   },
-  button: {
-    alignSelf: "flex-start",
-    backgroundColor: "#002b5c",
-    color: "white",
-    padding: "0.7rem 1.4rem",
-    borderRadius: "6px",
-    textDecoration: "none",
-    fontWeight: "600",
-    transition: "background-color 0.2s",
+  cardSubtitle: {
+    color: "#555",
+    textAlign: "center",
+    marginTop: "0.5rem",
   },
 
-  // Productivity Tool 区域
-  proSection: {
-    flex: "1 1 600px",
-    backgroundColor: "#fff",
-    padding: "2rem",
-    borderRadius: "12px",
-    boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
-    maxWidth: "650px",
-  },
-  proHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "1rem",
-    marginBottom: "1rem",
-  },
-  proIcon: {
-    fontSize: "2.5rem",
-  },
-  proTitle: {
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    fontSize: "1.3rem",
+  /* ---------------- Buttons ---------------- */
+  metalButton: {
+    background: "linear-gradient(90deg, #0a3d91, #0d4dbd)",
+    border: "none",
+    padding: "0.6rem 1.2rem",
     fontWeight: "600",
-    letterSpacing: "0.5px",
-    margin: 0,
   },
-  proSubtitle: {
-    fontSize: "1rem",
-    color: "#444",
-    marginBottom: "2rem",
-  },
-  
-  inputButton: {
-    display: "inline-block",
-    backgroundColor: "#004080",
-    color: "white",
-    padding: "0.7rem 1.4rem",
-    borderRadius: "6px",
-    textDecoration: "none",
+  metalButtonBlue: {
+    background: "linear-gradient(90deg, #003f9a, #0057d8)",
+    border: "none",
+    padding: "0.6rem",
     fontWeight: "600",
-    boxShadow: "4px 4px 10px rgba(0,0,0,0.2)",
-    marginBottom: "1.5rem",
-    transition: "all 0.2s ease",
-  },
-  
-  buttonRow: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: "1.5rem",
-    marginTop: "1rem",
   },
 
   redButton: {
-    backgroundColor: "#c0392b",
-    color: "white",
-    padding: "1rem 1.6rem",
-    borderRadius: "8px",
-    textDecoration: "none",
+    background: "#c0392b",
+    border: "none",
+    padding: "0.8rem",
     fontWeight: "600",
-    boxShadow: "4px 4px 10px rgba(0,0,0,0.15)",
-    transition: "background-color 0.2s",
   },
-
   blueButton: {
-    backgroundColor: "#0a3d91",
-    color: "white",
-    padding: "1rem 1.6rem",
-    borderRadius: "8px",
-    textDecoration: "none",
+    background: "#0a3d91",
+    border: "none",
+    padding: "0.8rem",
     fontWeight: "600",
-    boxShadow: "4px 4px 10px rgba(0,0,0,0.15)",
-    transition: "background-color 0.2s",
   },
 };
 

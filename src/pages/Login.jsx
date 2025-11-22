@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -53,7 +54,7 @@ function Login() {
       : { username: username.trim(), email: email.trim(), password };
 
     try {
-      const response = await fetch(`http://3.14.158.200:8080${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
