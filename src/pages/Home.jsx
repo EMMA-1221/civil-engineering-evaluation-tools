@@ -23,11 +23,11 @@ function Home() {
         {/* ---------- Login / Welcome ---------- */}
         {!user ? (
           <div style={styles.alertBoxYellow}>
-            🔒 Please <Link to="/login" style={styles.alertLink}>login</Link> to access all tools.
+             Please <Link to="/login" style={styles.alertLink}>login</Link> to access all tools.
           </div>
         ) : (
           <div style={styles.alertBoxGreen}>
-            👋 Welcome back, <strong>{user.username}</strong>! You have full access to all tools.
+           Welcome back, <strong>{user.username}</strong>! You have full access to all tools.
           </div>
         )}
 
@@ -39,7 +39,7 @@ function Home() {
             <Card style={styles.metalCard} className="shadow-lg">
               <Card.Body>
                 <div style={styles.cardHeader}>
-                  <span style={styles.cardIcon}>📊</span>
+                  <span style={styles.cardIcon}></span>
                   <Card.Title style={styles.cardTitle}>To BID or Not to BID?</Card.Title>
                 </div>
 
@@ -64,7 +64,7 @@ function Home() {
             <Card style={styles.metalCard} className="shadow-lg">
               <Card.Body>
                 <div style={styles.cardHeader}>
-                  <span style={styles.cardIcon}>⚡</span>
+                  <span style={styles.cardIcon}></span>
                   <Card.Title style={styles.cardTitle}>
                     FACTORS AFFECTING LABOR PRODUCTIVITY<br />
                     FOR ELECTRICAL CONTRACTORS
@@ -76,7 +76,7 @@ function Home() {
                 </Card.Subtitle>
 
                 <Button as={Link} to="/factors" style={styles.metalButtonBlue} className="mt-3">
-                  Input Your Factors →
+                  See All Factors →
                 </Button>
 
                 <div className="d-grid gap-3 mt-4">
@@ -132,7 +132,7 @@ const styles = {
   },
   alertBoxGreen: {
     background: "#d4f5dc",
-    border: "1px solid #57c27e",
+    border: "1px solid #ade2c1ff",
     borderRadius: "10px",
     padding: "1rem",
     maxWidth: "600px",
@@ -147,23 +147,42 @@ const styles = {
 
   /* ---------------- Chrome Metal Card ---------------- */
   metalCard: {
-    borderRadius: "16px",
-    padding: "1rem",
-    background: `
-      linear-gradient(160deg,
-        rgba(255,255,255,0.95) 0%,
-        rgba(230,230,230,0.75) 40%,
-        rgba(255,255,255,0.95) 60%,
-        rgba(180,180,180,0.65) 100%
-      )
-    `,
-    backdropFilter: "blur(6px)",
-    border: "1px solid rgba(255,255,255,0.7)",
-    boxShadow:
-      "inset 0 0 25px rgba(255,255,255,0.35), 0 10px 25px rgba(0,0,0,0.15)",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    cursor: "pointer",
-  },
+  borderRadius: "18px",
+  padding: "1.25rem",
+  background: `
+    linear-gradient(145deg,
+      rgba(255,255,255,0.86) 0%,
+      rgba(245,250,255,0.70) 35%,
+      rgba(230,242,255,0.55) 70%,
+      rgba(255,255,255,0.78) 100%
+    )
+  `,
+  position: "relative",
+  overflow: "hidden",
+
+  // glass feel
+  backdropFilter: "blur(10px) saturate(135%)",
+  WebkitBackdropFilter: "blur(10px) saturate(135%)",
+
+  // subtle border that matches the blue UI
+  border: "1px solid rgba(120,170,230,0.28)",
+
+  // softer, airier shadow (less “metal block”, more “floating card”)
+  boxShadow:
+    "0 14px 28px rgba(10, 35, 70, 0.14), 0 4px 10px rgba(10, 35, 70, 0.08)",
+
+  transition: "transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease",
+  cursor: "pointer",
+},
+
+// hover 时候更“呼吸感”
+metalCardHover: {
+  transform: "translateY(-4px)",
+  borderColor: "rgba(120,170,230,0.45)",
+  boxShadow:
+    "0 18px 34px rgba(10, 35, 70, 0.18), 0 8px 16px rgba(10, 35, 70, 0.10)",
+},
+
 
   /* ---------------- Inside Card ---------------- */
   cardHeader: {
@@ -174,12 +193,13 @@ const styles = {
   },
   cardIcon: { fontSize: "2rem" },
   cardTitle: {
-    fontFamily: "'Exo 2', sans-serif",
+    fontFamily: "'', sans-serif",
     fontSize: "1.3rem",
     fontWeight: "700",
     color: "#0a2540",
   },
   cardText: {
+    fontStyle: "italic",
     color: "#444",
     fontSize: "1rem",
     marginBottom: "1.5rem",

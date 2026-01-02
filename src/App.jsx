@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import { HashRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import { Navbar, Nav, Container, Dropdown, Button } from "react-bootstrap";
-
+import BidList from "./pages/BidList.jsx";
+import BidDetail from "./pages/BidDetail.jsx";
 import Home from "./pages/Home.jsx";
-import BidTool from "./pages/BidTool.jsx";
+import { ProductivityProvider, AuthProvider } from './Productivitycontext';
 import ProTool from "./pages/ProTool.jsx";
 import Factors from "./pages/Factors.jsx";
 import Proactive from "./pages/Proactive.jsx";
 import Retroactive from "./pages/Retroactive.jsx";
 import Login from "./pages/Login.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProductivityLossList from './pages/Productivitylosslist';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 }
@@ -40,7 +44,7 @@ function AppContent() {
         expand="lg"
         variant="dark"
         style={{
-          background: "linear-gradient(90deg, #001f4b 0%, #1976d2 50%, #64b5f6 100%)",
+          background: "linear-gradient(90deg, #001f4b 0%, #115395ff 50%, #1c69a9ff 100%)",
           padding: "1rem 2rem",
         }}
       >
@@ -97,8 +101,8 @@ function AppContent() {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item as={Link} to="/bid">📊 BID Tool</Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/pro">⚡ Productivity Tool</Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/bid">📋 BID Tool</Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/pro">📊 Productivity Tool</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
 
@@ -120,11 +124,31 @@ function AppContent() {
                     👤 {user.username}
                   </Dropdown.Toggle>
 
-                  <Dropdown.Menu style={{ width: "230px" }}>
+                  <Dropdown.Menu style={{ width: "250px" }}>
                     <Dropdown.Header>
                       <div style={{ fontWeight: "bold", fontSize: "1rem" }}>{user.username}</div>
                       <small style={{ color: "#555" }}>{user.email}</small>
                     </Dropdown.Header>
+
+                    <Dropdown.Divider />
+
+                    {/* My Projects Section */}
+                    <Dropdown.ItemText style={{ 
+                      fontSize: "0.75rem", 
+                      fontWeight: "600", 
+                      color: "#999",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px"
+                    }}>
+                      My Projects
+                    </Dropdown.ItemText>
+                    
+                    <Dropdown.Item onClick={() => navigate("/productivity-losses")}>
+                      📊 Productivity Loss Projects
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/bid")}>
+                      📋 My Bids
+                    </Dropdown.Item>
 
                     <Dropdown.Divider />
 
@@ -134,7 +158,7 @@ function AppContent() {
                     <Dropdown.Divider />
 
                     <Dropdown.Item onClick={handleLogout} style={{ color: "red", fontWeight: 600 }}>
-                      🔓 Logout
+                       Logout
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
@@ -158,18 +182,23 @@ function AppContent() {
       </Navbar>
 
       {/* --- MAIN CONTENT --- */}
-      <main style={{ flex: 1, margin: "0", padding: 0 }}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
+      <ProductivityProvider>
+        <main style={{ flex: 1, margin: "0", padding: 0 }}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
 
-          <Route path="/bid" element={<ProtectedRoute><BidTool /></ProtectedRoute>} />
-          <Route path="/pro" element={<ProtectedRoute><ProTool /></ProtectedRoute>} />
-          <Route path="/factors" element={<ProtectedRoute><Factors /></ProtectedRoute>} />
-          <Route path="/proactive" element={<ProtectedRoute><Proactive /></ProtectedRoute>} />
-          <Route path="/retroactive" element={<ProtectedRoute><Retroactive /></ProtectedRoute>} />
-        </Routes>
-      </main>
+            <Route path="/bid" element={<ProtectedRoute><BidList /></ProtectedRoute>} />
+            <Route path="/bid/new" element={<ProtectedRoute><BidDetail /></ProtectedRoute>} />
+            <Route path="/bid/:id" element={<ProtectedRoute><BidDetail /></ProtectedRoute>} />
+            <Route path="/pro" element={<ProtectedRoute><ProTool /></ProtectedRoute>} />
+            <Route path="/factors" element={<ProtectedRoute><Factors /></ProtectedRoute>} />
+            <Route path="/proactive" element={<ProtectedRoute><Proactive /></ProtectedRoute>} />
+            <Route path="/retroactive" element={<ProtectedRoute><Retroactive /></ProtectedRoute>} />
+            <Route path="/productivity-losses" element={<ProtectedRoute><ProductivityLossList /></ProtectedRoute>} />
+          </Routes>
+        </main>
+      </ProductivityProvider>
 
       {/* FOOTER */}
       <footer

@@ -1,114 +1,195 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ProTool() {
+  const navigate = useNavigate();
+
   return (
-    <div style={styles.page}>
-      {/* 主标题 */}
-      <h1 style={styles.title}>
-        FACTORS AFFECTING LABOR PRODUCTIVITY <br /> FOR ELECTRICAL CONTRACTORS
-      </h1>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>📊 Productivity Loss Analysis Tool</h1>
+        <p style={styles.subtitle}>
+          Analyze and calculate productivity losses in your construction projects
+        </p>
+      </div>
 
-      {/* 副标题 */}
-      <h2 style={styles.subtitle}>
-        <em>A Quantified Statistical Approach</em>
-      </h2>
+      <div style={styles.content}>
+        {/* New Project Button */}
+        <div style={styles.actionSection}>
+          <button 
+            onClick={() => navigate("/productivity-losses")} 
+            style={styles.newProjectBtn}
+          >
+            📁 My Productivity Loss Projects
+          </button>
+        </div>
 
-      {/* 按钮区 */}
-       <Link to="/factors" style={styles.inputButton}>
-                Input Your Factors →
-                </Link>
-          <div style={styles.buttonRow}>
-  
-  <Link to="/proactive" style={styles.redButton}>
-    Proactive Calculation for Productivity Loss
-  </Link>
-  <Link to="/retroactive" style={styles.blueButton}>
-    Retroactive Calculation for Productivity Loss
-  </Link>
-</div>
+        {/* Tool Options */}
+        <div style={styles.toolGrid}>
+          {/* Proactive Card */}
+          <div style={styles.card}>
+            <div style={styles.cardIcon}>🔮</div>
+            <h3 style={styles.cardTitle}>Proactive Analysis</h3>
+            <p style={styles.cardDescription}>
+              Calculate estimated productivity losses before they occur based on planned factors
+            </p>
+            <button 
+              onClick={() => navigate("/proactive")} 
+              style={styles.cardButton}
+            >
+              Start Proactive Analysis →
+            </button>
+          </div>
+
+          {/* Retroactive Card */}
+          <div style={styles.card}>
+            <div style={styles.cardIcon}>📈</div>
+            <h3 style={styles.cardTitle}>Retroactive Analysis</h3>
+            <p style={styles.cardDescription}>
+              Analyze actual productivity losses after project completion based on real data
+            </p>
+            <button 
+              onClick={() => navigate("/retroactive")} 
+              style={styles.cardButton}
+            >
+              Start Retroactive Analysis →
+            </button>
+          </div>
+
+          {/* Factors Card */}
+          <div style={styles.card}>
+            <div style={styles.cardIcon}>⚙️</div>
+            <h3 style={styles.cardTitle}>Impact Factors</h3>
+            <p style={styles.cardDescription}>
+              Review and understand the various factors that impact construction productivity
+            </p>
+            <button 
+              onClick={() => navigate("/factors")} 
+              style={styles.cardButton}
+            >
+              View Impact Factors →
+            </button>
+          </div>
+        </div>
+
+        {/* Info Section */}
+        <div style={styles.infoSection}>
+          <h3 style={styles.infoTitle}>How to Use This Tool</h3>
+          <ol style={styles.infoList}>
+            <li>Create a new project or select an existing one from "My Productivity Loss Projects"</li>
+            <li>Choose between Proactive or Retroactive analysis based on your needs</li>
+            <li>Input your project data including work hours and impact factors</li>
+            <li>Review the calculated productivity losses and generate reports</li>
+          </ol>
+        </div>
+      </div>
     </div>
   );
 }
 
-// ========================= 样式 =========================
 const styles = {
-  page: {
-    backgroundColor: "#fff",
-    color: "#111",
-    fontFamily: "Georgia, 'Times New Roman', serif",
+  container: {
     minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#f8fafc",
+    paddingBottom: "3rem",
+  },
+  header: {
+    background: "linear-gradient(135deg, #001f4b 0%, #115395ff 50%, #1c69a9ff 100%)",
+    color: "white",
+    padding: "3rem 2rem",
     textAlign: "center",
   },
   title: {
-    fontSize: "1.8rem",
-    fontWeight: "600",
-    marginBottom: "0.6rem",
-    letterSpacing: "0.5px",
+    fontSize: "2.5rem",
+    fontWeight: "700",
+    marginBottom: "1rem",
+    fontFamily: "'Orbitron', sans-serif",
   },
   subtitle: {
-    fontSize: "1.2rem",
-    fontWeight: "400",
-    fontStyle: "italic",
-    color: "#333",
+    fontSize: "1.1rem",
+    opacity: 0.9,
+  },
+  content: {
+    maxWidth: "1400px",
+    margin: "0 auto",
+    padding: "2rem",
+  },
+  actionSection: {
+    textAlign: "center",
     marginBottom: "3rem",
   },
-  buttonContainer: {
-    display: "flex",
+  newProjectBtn: {
+    background: "linear-gradient(135deg, #3498db 0%, #2980b9 100%)",
+    color: "white",
+    border: "none",
+    borderRadius: "12px",
+    padding: "1rem 2.5rem",
+    fontSize: "1.2rem",
+    fontWeight: "600",
+    cursor: "pointer",
+    boxShadow: "0 4px 15px rgba(52, 152, 219, 0.3)",
+    transition: "all 0.3s ease",
+  },
+  toolGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
     gap: "2rem",
+    marginBottom: "3rem",
   },
-  redButton: {
-    background: "linear-gradient(145deg, #e53935, #c62828)",
+  card: {
+    backgroundColor: "white",
+    borderRadius: "12px",
+    padding: "2rem",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    cursor: "pointer",
+  },
+  cardIcon: {
+    fontSize: "3rem",
+    marginBottom: "1rem",
+  },
+  cardTitle: {
+    fontSize: "1.5rem",
+    fontWeight: "600",
+    color: "#002b5c",
+    marginBottom: "1rem",
+  },
+  cardDescription: {
+    fontSize: "1rem",
+    color: "#666",
+    lineHeight: "1.6",
+    marginBottom: "1.5rem",
+  },
+  cardButton: {
+    background: "#0d47a1",
     color: "white",
     border: "none",
-    padding: "1.2rem 1.8rem",
+    borderRadius: "8px",
+    padding: "0.75rem 1.5rem",
     fontSize: "1rem",
     fontWeight: "600",
-    borderRadius: "4px",
-    boxShadow: "6px 6px 10px rgba(0,0,0,0.2)",
     cursor: "pointer",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    width: "100%",
+    transition: "background 0.3s ease",
   },
-  blueButton: {
-    background: "linear-gradient(145deg, #0d47a1, #002171)",
-    color: "white",
-    border: "none",
-    padding: "1.2rem 1.8rem",
-    fontSize: "1rem",
+  infoSection: {
+    backgroundColor: "white",
+    borderRadius: "12px",
+    padding: "2rem",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+  },
+  infoTitle: {
+    fontSize: "1.5rem",
     fontWeight: "600",
-    borderRadius: "4px",
-    boxShadow: "6px 6px 10px rgba(0,0,0,0.25)",
-    cursor: "pointer",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    color: "#002b5c",
+    marginBottom: "1rem",
   },
-  buttonHover: {
-    transform: "translateY(-2px)",
-    boxShadow: "8px 8px 15px rgba(0,0,0,0.3)",
+  infoList: {
+    fontSize: "1rem",
+    color: "#666",
+    lineHeight: "2",
+    paddingLeft: "1.5rem",
   },
-  buttonRow: {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  flexWrap: "wrap",          // 窄屏时自动换行，不会重叠
-  gap: "1.5rem",             // 按钮之间的距离
-  marginTop: "2rem",
-},
-
-factorButton: {
-  backgroundColor: "#0a3d91",
-  color: "white",
-  padding: "1rem 1.8rem",
-  borderRadius: "8px",
-  textDecoration: "none",
-  fontWeight: "600",
-  boxShadow: "4px 4px 10px rgba(0,0,0,0.15)",
-},
-
-
 };
 
 export default ProTool;
