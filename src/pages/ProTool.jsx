@@ -26,33 +26,18 @@ function ProTool() {
 
         {/* Tool Options */}
         <div style={styles.toolGrid}>
-          {/* Proactive Card */}
-          <div style={styles.card}>
-            <div style={styles.cardIcon}>🔮</div>
-            <h3 style={styles.cardTitle}>Proactive Analysis</h3>
+          {/* Unified Productivity Analysis Card */}
+          <div style={styles.cardLarge}>
+            <div style={styles.cardIcon}>📊</div>
+            <h3 style={styles.cardTitle}>Productivity Analysis</h3>
             <p style={styles.cardDescription}>
-              Calculate estimated productivity losses before they occur based on planned factors
+              Calculate productivity losses with both Proactive and Retroactive methods. Switch between analysis modes seamlessly with shared input data.
             </p>
             <button 
-              onClick={() => navigate("/proactive")} 
+              onClick={() => navigate("/productivity-analysis")} 
               style={styles.cardButton}
             >
-              Start Proactive Analysis →
-            </button>
-          </div>
-
-          {/* Retroactive Card */}
-          <div style={styles.card}>
-            <div style={styles.cardIcon}>📈</div>
-            <h3 style={styles.cardTitle}>Retroactive Analysis</h3>
-            <p style={styles.cardDescription}>
-              Analyze actual productivity losses after project completion based on real data
-            </p>
-            <button 
-              onClick={() => navigate("/retroactive")} 
-              style={styles.cardButton}
-            >
-              Start Retroactive Analysis →
+              Start Analysis →
             </button>
           </div>
 
@@ -77,7 +62,8 @@ function ProTool() {
           <h3 style={styles.infoTitle}>How to Use This Tool</h3>
           <ol style={styles.infoList}>
             <li>Create a new project or select an existing one from "My Productivity Loss Projects"</li>
-            <li>Choose between Proactive or Retroactive analysis based on your needs</li>
+            <li>Open the Productivity Analysis tool</li>
+            <li>Switch between Proactive and Retroactive tabs as needed - your data is shared between both modes</li>
             <li>Input your project data including work hours and impact factors</li>
             <li>Review the calculated productivity losses and generate reports</li>
           </ol>
@@ -132,9 +118,16 @@ const styles = {
   },
   toolGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gridTemplateColumns: "2fr 1fr",
     gap: "2rem",
     marginBottom: "3rem",
+  },
+  cardLarge: {
+    backgroundColor: "white",
+    borderRadius: "12px",
+    padding: "2.5rem",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
   },
   card: {
     backgroundColor: "white",
@@ -142,7 +135,6 @@ const styles = {
     padding: "2rem",
     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
     transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    cursor: "pointer",
   },
   cardIcon: {
     fontSize: "3rem",

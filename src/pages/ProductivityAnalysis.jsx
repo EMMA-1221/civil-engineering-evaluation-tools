@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProductivity } from "../Productivitycontext";
 
-function Proactive() {
+function ProductivityAnalysis() {
+  const [activeTab, setActiveTab] = useState("proactive"); // "proactive" or "retroactive"
   const navigate = useNavigate();
+  
   const {
     weeks,
     planned,
@@ -19,23 +21,53 @@ function Proactive() {
     handleReset,
   } = useProductivity();
 
+  // Retroactive specific state (if needed)
+  const [actualHours, setActualHours] = useState(Array(14).fill(0));
+
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Proactive Calculation of Productivity Loss</h2>
+      {/* Tab Navigation */}
+      <div style={styles.tabContainer}>
+        <button
+          onClick={() => setActiveTab("proactive")}
+          style={{
+            ...styles.tab,
+            ...(activeTab === "proactive" ? styles.activeTab : styles.inactiveTab),
+          }}
+        >
+          Proactive
+        </button>
+        <button
+          onClick={() => setActiveTab("retroactive")}
+          style={{
+            ...styles.tab,
+            ...(activeTab === "retroactive" ? styles.activeTab : styles.inactiveTab),
+          }}
+        >
+          Retroactive
+        </button>
+      </div>
 
-      {/* 操作区 */}
+      {/* Page Title */}
+      <h2 style={styles.title}>
+        {activeTab === "proactive" 
+          ? "Proactive Calculation of Productivity Loss" 
+          : "Retroactive Calculation of Productivity Loss"}
+      </h2>
+
+      {/* Toolbar */}
       <div style={styles.toolbar}>
         <div style={{ display: "flex", gap: "1rem" }}>
           <button onClick={handleReset} style={styles.resetBtn}>Reset</button>
-          <button onClick={() => navigate("/retroactive")} style={styles.switchBtn}>
-            Switch to Retroactive →
+          <button onClick={() => navigate("/productivity-losses")} style={styles.projectBtn}>
+            📁 My Projects
           </button>
         </div>
         <button style={styles.calculateBtn}>Calculate Productivity Loss</button>
         <div style={styles.totalBox}>Total Loss: <strong>{totalLoss}</strong> hrs</div>
       </div>
 
-      {/* 可滚动表格容器 */}
+      {/* Table Wrapper */}
       <div style={styles.tableWrapper}>
         <table style={styles.table}>
           <thead>
@@ -93,6 +125,27 @@ function Proactive() {
                 <td key={i} style={styles.revisedCell}>{r}</td>
               ))}
             </tr>
+
+            {/* Retroactive Only: Actual Hours */}
+            {activeTab === "retroactive" && (
+              <tr style={styles.actualRow}>
+                <td style={styles.stickyCellActual}><strong>Actual Hours</strong></td>
+                {actualHours.map((val, i) => (
+                  <td key={i} style={styles.actualCell}>
+                    <input
+                      type="number"
+                      value={val}
+                      onChange={(e) => {
+                        const newArr = [...actualHours];
+                        newArr[i] = parseFloat(e.target.value) || 0;
+                        setActualHours(newArr);
+                      }}
+                      style={styles.input}
+                    />
+                  </td>
+                ))}
+              </tr>
+            )}
 
             {/* Productivity Factors Header */}
             <tr style={styles.factorHeaderRow}>
@@ -179,7 +232,13 @@ function Proactive() {
 
             {/* Estimated Loss of Productivity */}
             <tr style={styles.estimatedLossRow}>
-              <td style={styles.stickyCellLoss}><strong>Estimated Loss of Productivity</strong></td>
+              <td style={styles.stickyCellLoss}>
+                <strong>
+                  {activeTab === "proactive" 
+                    ? "Estimated Loss of Productivity" 
+                    : "Actual Loss of Productivity"}
+                </strong>
+              </td>
               {estimatedLoss.map((val, i) => (
                 <td key={i} style={styles.estimatedLossCell}>{val}</td>
               ))}
@@ -198,6 +257,29 @@ const styles = {
     backgroundColor: "#f8fafc",
     minHeight: "100vh",
   },
+  tabContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "2rem",
+    gap: "0",
+  },
+  tab: {
+    padding: "0.75rem 3rem",
+    fontSize: "1.1rem",
+    fontWeight: "600",
+    border: "none",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  },
+  activeTab: {
+    backgroundColor: "#27ae60",
+    color: "white",
+    borderBottom: "3px solid #1e8449",
+  },
+  inactiveTab: {
+    backgroundColor: "#7f8c8d",
+    color: "white",
+  },
   title: {
     textAlign: "center",
     marginBottom: "1.5rem",
@@ -209,7 +291,7 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "1rem",
-    padding: "0 1rem", // 添加左右内边距
+    padding: "0 1rem",
   },
   resetBtn: {
     background: "#c0392b",
@@ -221,8 +303,8 @@ const styles = {
     fontSize: "1rem",
     fontWeight: "500",
   },
-  switchBtn: {
-    background: "#0d47a1",
+  projectBtn: {
+    background: "#3498db",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -293,6 +375,17 @@ const styles = {
     zIndex: 5,
     minWidth: "180px",
   },
+  stickyCellActual: {
+    position: "sticky",
+    left: 0,
+    backgroundColor: "#d1ecf1",
+    padding: "0.6rem 1rem",
+    textAlign: "left",
+    border: "1px solid #ccc",
+    fontWeight: "600",
+    zIndex: 5,
+    minWidth: "180px",
+  },
   stickyCellTotal: {
     position: "sticky",
     left: 0,
@@ -330,8 +423,17 @@ const styles = {
     backgroundColor: "#fff3cd",
     fontWeight: "500",
   },
+  actualCell: {
+    border: "1px solid #ccc",
+    textAlign: "center",
+    padding: "0.4rem",
+    backgroundColor: "#d1ecf1",
+  },
   revisedRow: {
     backgroundColor: "#fff3cd",
+  },
+  actualRow: {
+    backgroundColor: "#d1ecf1",
   },
   factorHeaderRow: {
     backgroundColor: "#e8e8e8",
@@ -387,4 +489,4 @@ const styles = {
   },
 };
 
-export default Proactive;
+export default ProductivityAnalysis;

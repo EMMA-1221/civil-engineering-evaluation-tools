@@ -16,10 +16,26 @@ const ProductivityLossList = () => {
     fetchProductivityLosses();
   }, []);
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  };
+
   const fetchProductivityLosses = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       const response = await fetch('/api/productivity-losses', {
-        credentials: 'include'
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       
       if (!response.ok) {
@@ -50,10 +66,7 @@ const ProductivityLossList = () => {
     try {
       const response = await fetch('/api/productivity-losses', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           project_name: newProjectName,
           total_weeks: totalWeeks
@@ -82,9 +95,12 @@ const ProductivityLossList = () => {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`/api/productivity-losses/${id}`, {
         method: 'DELETE',
-        credentials: 'include'
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (!response.ok) {
@@ -100,7 +116,7 @@ const ProductivityLossList = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/proactive?productivityLoss=${id}`);
+    navigate(`/productivity-analysis?productivityLoss=${id}`);
   };
 
   const formatDate = (dateString) => {

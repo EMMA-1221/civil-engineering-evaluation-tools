@@ -7,8 +7,7 @@ import Home from "./pages/Home.jsx";
 import { ProductivityProvider, AuthProvider } from './Productivitycontext';
 import ProTool from "./pages/ProTool.jsx";
 import Factors from "./pages/Factors.jsx";
-import Proactive from "./pages/Proactive.jsx";
-import Retroactive from "./pages/Retroactive.jsx";
+import ProductivityAnalysis from "./pages/ProductivityAnalysis.jsx"; // 新的统一页面
 import Login from "./pages/Login.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ProductivityLossList from './pages/Productivitylosslist';
@@ -158,7 +157,7 @@ function AppContent() {
                     <Dropdown.Divider />
 
                     <Dropdown.Item onClick={handleLogout} style={{ color: "red", fontWeight: 600 }}>
-                       Logout
+                      🚪 Logout
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
@@ -191,10 +190,17 @@ function AppContent() {
             <Route path="/bid" element={<ProtectedRoute><BidList /></ProtectedRoute>} />
             <Route path="/bid/new" element={<ProtectedRoute><BidDetail /></ProtectedRoute>} />
             <Route path="/bid/:id" element={<ProtectedRoute><BidDetail /></ProtectedRoute>} />
+            
             <Route path="/pro" element={<ProtectedRoute><ProTool /></ProtectedRoute>} />
             <Route path="/factors" element={<ProtectedRoute><Factors /></ProtectedRoute>} />
-            <Route path="/proactive" element={<ProtectedRoute><Proactive /></ProtectedRoute>} />
-            <Route path="/retroactive" element={<ProtectedRoute><Retroactive /></ProtectedRoute>} />
+            
+            {/* 新的统一路由 - 替代 proactive 和 retroactive */}
+            <Route path="/productivity-analysis" element={<ProtectedRoute><ProductivityAnalysis /></ProtectedRoute>} />
+            
+            {/* 保留旧路由以防有链接 - 重定向到新页面 */}
+            <Route path="/proactive" element={<ProtectedRoute><ProductivityAnalysis /></ProtectedRoute>} />
+            <Route path="/retroactive" element={<ProtectedRoute><ProductivityAnalysis /></ProtectedRoute>} />
+            
             <Route path="/productivity-losses" element={<ProtectedRoute><ProductivityLossList /></ProtectedRoute>} />
           </Routes>
         </main>
