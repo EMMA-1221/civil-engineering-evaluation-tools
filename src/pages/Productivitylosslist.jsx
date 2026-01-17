@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Productivitycontext';
-import '../App.css';
+import './ProductivityLossList.css';  // ← 改用外部 CSS
 
 const ProductivityLossList = () => {
   const [productivityLosses, setProductivityLosses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNewModal, setShowNewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
   const [newProjectName, setNewProjectName] = useState('');
   const [totalWeeks, setTotalWeeks] = useState(14);
+  const [editWeeks, setEditWeeks] = useState(14);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -119,6 +122,46 @@ const ProductivityLossList = () => {
     navigate(`/productivity-analysis?productivityLoss=${id}`);
   };
 
+  const handleEdit = (project) => {
+    setEditingProject(project);
+    setEditWeeks(project.total_weeks);
+    setShowEditModal(true);
+  };
+
+  const handleEditSave = async () => {
+    if (!editingProject) return;
+
+    if (editWeeks < 1 || editWeeks > 52) {
+      alert('Total weeks must be between 1 and 52');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/productivity-losses/${editingProject.project_id || editingProject.id}/weeks-count`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ total_weeks: editWeeks })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update project weeks');
+      }
+
+      const data = await response.json();
+      alert(`✅ Project updated successfully!\n\nOld weeks: ${data.old_weeks}\nNew weeks: ${data.new_weeks}`);
+      setShowEditModal(false);
+      setEditingProject(null);
+      fetchProductivityLosses();
+    } catch (error) {
+      console.error('Error updating project weeks:', error);
+      alert('Failed to update project weeks');
+    }
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -135,16 +178,16 @@ const ProductivityLossList = () => {
 
   if (loading) {
     return (
-      <div className="container">
+      <div className="productivity-loss-container">
         <div className="loading">Loading productivity losses...</div>
       </div>
     );
   }
 
   return (
-    <div className="container">
-      <div className="header">
-        <h1>📊 My Productivity Loss Projects</h1>
+    <div className="productivity-loss-container">
+      <div className="productivity-loss-header">
+        <h1> My Productivity Loss Projects</h1>
         <div className="header-buttons">
           <button className="btn btn-primary" onClick={() => setShowNewModal(true)}>
             + New Project
@@ -155,7 +198,7 @@ const ProductivityLossList = () => {
         </div>
       </div>
 
-      <div className="content">
+      <div className="productivity-loss-content">
         <div className="user-info">
           <div>
             <strong>Welcome!</strong> {user?.username || ''}
@@ -191,7 +234,7 @@ const ProductivityLossList = () => {
               </thead>
               <tbody>
                 {productivityLosses.map((item) => (
-                  <tr key={item.id}>
+                  <tr key={item.project_id || item.id}>
                     <td className="project-name">{item.project_name}</td>
                     {user?.role === 'admin' && <td>{item.username}</td>}
                     <td>{item.total_weeks} weeks</td>
@@ -206,13 +249,19 @@ const ProductivityLossList = () => {
                       <div className="action-buttons">
                         <button 
                           className="btn btn-primary btn-small"
-                          onClick={() => handleView(item.id)}
+                          onClick={() => handleView(item.project_id || item.id)}
                         >
                           View
                         </button>
                         <button 
+                          className="btn btn-secondary btn-small"
+                          onClick={() => handleEdit(item)}
+                        >
+                          Edit
+                        </button>
+                        <button 
                           className="btn btn-danger btn-small"
-                          onClick={() => handleDelete(item.id, item.project_name)}
+                          onClick={() => handleDelete(item.project_id || item.id, item.project_name)}
                         >
                           Delete
                         </button>
@@ -228,7 +277,7 @@ const ProductivityLossList = () => {
 
       {/* New Productivity Loss Modal */}
       {showNewModal && (
-        <div className="modal active" onClick={() => setShowNewModal(false)}>
+        <div className="modal-overlay active" onClick={() => setShowNewModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Create New Productivity Loss Project</h2>
             <form onSubmit={handleCreate}>
@@ -271,247 +320,44 @@ const ProductivityLossList = () => {
         </div>
       )}
 
-      <style jsx>{`
-        .container {
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 20px;
-        }
-
-        .header {
-          background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-          color: white;
-          padding: 30px;
-          border-radius: 15px 15px 0 0;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 0;
-        }
-
-        .header h1 {
-          font-size: 28px;
-          font-weight: 600;
-          margin: 0;
-        }
-
-        .header-buttons {
-          display: flex;
-          gap: 15px;
-        }
-
-        .content {
-          background: white;
-          padding: 30px;
-          border-radius: 0 0 15px 15px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-info {
-          background: #f8f9fa;
-          padding: 15px 20px;
-          border-radius: 8px;
-          margin-bottom: 25px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .role-badge {
-          background: #3498db;
-          color: white;
-          padding: 5px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-        }
-
-        .role-badge.admin {
-          background: #e74c3c;
-        }
-
-        .projects-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-        }
-
-        .projects-table thead {
-          background: #34495e;
-          color: white;
-        }
-
-        .projects-table th {
-          padding: 15px;
-          text-align: left;
-          font-weight: 600;
-          font-size: 14px;
-        }
-
-        .projects-table td {
-          padding: 15px;
-          border-bottom: 1px solid #ecf0f1;
-        }
-
-        .projects-table tbody tr {
-          transition: background 0.2s ease;
-        }
-
-        .projects-table tbody tr:hover {
-          background: #f8f9fa;
-        }
-
-        .project-name {
-          font-weight: 600;
-          color: #2c3e50;
-        }
-
-        .loss-value {
-          font-weight: 600;
-        }
-
-        .loss-value.proactive {
-          color: #e67e22;
-        }
-
-        .loss-value.retroactive {
-          color: #3498db;
-        }
-
-        .action-buttons {
-          display: flex;
-          gap: 10px;
-        }
-
-        .btn {
-          padding: 12px 24px;
-          border: none;
-          border-radius: 8px;
-          font-size: 14px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-          background: #3498db;
-          color: white;
-        }
-
-        .btn-primary:hover {
-          background: #2980b9;
-          transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-          background: #95a5a6;
-          color: white;
-        }
-
-        .btn-secondary:hover {
-          background: #7f8c8d;
-        }
-
-        .btn-danger {
-          background: #e74c3c;
-          color: white;
-        }
-
-        .btn-danger:hover {
-          background: #c0392b;
-        }
-
-        .btn-small {
-          padding: 8px 16px;
-          font-size: 13px;
-        }
-
-        .no-projects {
-          text-align: center;
-          padding: 60px 20px;
-          color: #7f8c8d;
-        }
-
-        .no-projects h2 {
-          font-size: 24px;
-          margin-bottom: 10px;
-          color: #2c3e50;
-        }
-
-        .no-projects p {
-          font-size: 16px;
-          margin-bottom: 20px;
-        }
-
-        .modal {
-          display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          z-index: 1000;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .modal.active {
-          display: flex;
-        }
-
-        .modal-content {
-          background: white;
-          padding: 30px;
-          border-radius: 12px;
-          max-width: 500px;
-          width: 90%;
-        }
-
-        .modal-content h2 {
-          margin-bottom: 20px;
-          color: #2c3e50;
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-        }
-
-        .form-group label {
-          display: block;
-          margin-bottom: 8px;
-          font-weight: 600;
-          color: #2c3e50;
-        }
-
-        .form-group input {
-          width: 100%;
-          padding: 12px;
-          border: 2px solid #ecf0f1;
-          border-radius: 8px;
-          font-size: 14px;
-          box-sizing: border-box;
-        }
-
-        .form-group input:focus {
-          outline: none;
-          border-color: #3498db;
-        }
-
-        .modal-buttons {
-          display: flex;
-          gap: 10px;
-          justify-content: flex-end;
-          margin-top: 25px;
-        }
-
-        .loading {
-          text-align: center;
-          padding: 40px;
-          color: #7f8c8d;
-          font-size: 18px;
-        }
-      `}</style>
+      {/* Edit Project Weeks Modal */}
+      {showEditModal && editingProject && (
+        <div className="modal-overlay active" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Edit Project: {editingProject.project_name}</h2>
+            <div className="form-group">
+              <label htmlFor="editWeeks">Total Weeks</label>
+              <input
+                type="number"
+                id="editWeeks"
+                value={editWeeks}
+                onChange={(e) => setEditWeeks(parseInt(e.target.value))}
+                min="1"
+                max="52"
+              />
+              <p style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
+                Current: {editingProject.total_weeks} weeks
+              </p>
+            </div>
+            <div className="modal-buttons">
+              <button 
+                type="button" 
+                className="btn btn-secondary"
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button"
+                className="btn btn-primary"
+                onClick={handleEditSave}
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

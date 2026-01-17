@@ -100,8 +100,8 @@ function AppContent() {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item as={Link} to="/bid">📋 BID Tool</Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/pro">📊 Productivity Tool</Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/bid"> BID </Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/pro"> Productivity loss</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
 
@@ -143,21 +143,21 @@ function AppContent() {
                     </Dropdown.ItemText>
                     
                     <Dropdown.Item onClick={() => navigate("/productivity-losses")}>
-                      📊 Productivity Loss Projects
+                       Productivity Loss Projects
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => navigate("/bid")}>
-                      📋 My Bids
+                       My Bids
                     </Dropdown.Item>
 
                     <Dropdown.Divider />
 
-                    <Dropdown.Item onClick={() => navigate("/profile")}>📄 Profile</Dropdown.Item>
-                    <Dropdown.Item onClick={() => navigate("/settings")}>⚙️ Settings</Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/profile")}> Profile</Dropdown.Item>
+                    <Dropdown.Item onClick={() => navigate("/settings")}> Settings</Dropdown.Item>
 
                     <Dropdown.Divider />
 
                     <Dropdown.Item onClick={handleLogout} style={{ color: "red", fontWeight: 600 }}>
-                      🚪 Logout
+                       Logout
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

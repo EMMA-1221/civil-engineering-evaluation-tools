@@ -7,7 +7,7 @@ function ProTool() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.title}>📊 Productivity Loss Analysis Tool</h1>
+        <h1 style={styles.title}> Productivity Loss Analysis Tool</h1>
         <p style={styles.subtitle}>
           Analyze and calculate productivity losses in your construction projects
         </p>
@@ -20,7 +20,7 @@ function ProTool() {
             onClick={() => navigate("/productivity-losses")} 
             style={styles.newProjectBtn}
           >
-            📁 My Productivity Loss Projects
+             My Productivity Loss Projects
           </button>
         </div>
 
@@ -34,7 +34,7 @@ function ProTool() {
               Calculate productivity losses with both Proactive and Retroactive methods. Switch between analysis modes seamlessly with shared input data.
             </p>
             <button 
-              onClick={() => navigate("/productivity-analysis")} 
+              onClick={() => navigate("/productivity-losses")} 
               style={styles.cardButton}
             >
               Start Analysis →

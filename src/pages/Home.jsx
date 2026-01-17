@@ -27,7 +27,7 @@ function Home() {
           </div>
         ) : (
           <div style={styles.alertBoxGreen}>
-            ✅ Welcome back, <strong>{user.username}</strong>! You have full access to all tools.
+            Welcome back, <strong>{user.username}</strong>! You have full access to all tools.
           </div>
         )}
 
@@ -39,7 +39,7 @@ function Home() {
             <Card style={styles.metalCard} className="shadow-lg">
               <Card.Body>
                 <div style={styles.cardHeader}>
-                  <span style={styles.cardIcon}>📋</span>
+                  <span style={styles.cardIcon}></span>
                   <Card.Title style={styles.cardTitle}>To BID or Not to BID?</Card.Title>
                 </div>
 
@@ -64,7 +64,7 @@ function Home() {
             <Card style={styles.metalCard} className="shadow-lg">
               <Card.Body>
                 <div style={styles.cardHeader}>
-                  <span style={styles.cardIcon}>📊</span>
+                  <span style={styles.cardIcon}></span>
                   <Card.Title style={styles.cardTitle}>
                     FACTORS AFFECTING LABOR PRODUCTIVITY<br />
                     FOR ELECTRICAL CONTRACTORS
@@ -80,8 +80,8 @@ function Home() {
                 </Button>
 
                 <div className="d-grid gap-3 mt-4">
-                  <Button as={Link} to="/productivity-analysis" style={styles.analysisButton}>
-                    📊 Productivity Loss Analysis
+                  <Button as={Link} to="/productivity-losses" style={styles.analysisButton}>
+                    Productivity Loss Analysis
                   </Button>
                   <p style={{ textAlign: 'center', fontSize: '0.85rem', color: '#666', marginTop: '-0.5rem', marginBottom: 0 }}>
                     <em>Proactive & Retroactive modes with shared data</em>

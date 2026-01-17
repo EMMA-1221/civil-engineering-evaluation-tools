@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProductivity } from "../Productivitycontext";
 
 function ProductivityAnalysis() {
   const [activeTab, setActiveTab] = useState("proactive"); // "proactive" or "retroactive"
+  const [projectWeeks, setProjectWeeks] = useState(null); // 项目实际周数
   const navigate = useNavigate();
   
   const {
-    weeks,
+    weeks: contextWeeks,
     planned,
     setPlanned,
     change,
@@ -21,8 +22,239 @@ function ProductivityAnalysis() {
     handleReset,
   } = useProductivity();
 
-  // Retroactive specific state (if needed)
-  const [actualHours, setActualHours] = useState(Array(14).fill(0));
+  // 使用项目的实际周数,如果没有加载则使用 Context 的
+  const weeks = projectWeeks || contextWeeks;
+
+  // 本地实时计算 Total Factors（不依赖 Context）
+  const localTotalFactors = weeks.map((_, i) => {
+    const overmanning = Number(factors.overmanning[i]) || 0;
+    const stacking = Number(factors.stacking[i]) || 0;
+    const overtime = Number(factors.overtime[i]) || 0;
+    return overmanning + stacking + overtime;
+  });
+
+  // 本地实时计算 Revised Hours
+  const localRevised = weeks.map((_, i) => {
+    const p = Number(planned[i]) || 0;
+    const c = Number(change[i]) || 0;
+    return p + c;
+  });
+
+  // 从数据库加载数据
+  useEffect(() => {
+    const loadProjectData = async () => {
+      // 支持两种路由模式
+      let projectId;
+      
+      // 尝试从 query string 获取
+      const urlParams = new URLSearchParams(window.location.search);
+      projectId = urlParams.get('productivityLoss');
+      
+      // 如果没有，尝试从 hash 中获取（React Router hash mode）
+      if (!projectId && window.location.hash) {
+        const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+        projectId = hashParams.get('productivityLoss');
+      }
+
+      if (!projectId) {
+        console.log('No project ID in URL');
+        alert('Error: No project ID found. Please return to project list and try again.');
+        return;
+      }
+
+      console.log('Loading project ID:', projectId);
+
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          navigate('/login');
+          return;
+        }
+
+        const response = await fetch(`/api/productivity-losses/${projectId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load project data');
+        }
+
+        const data = await response.json();
+        
+        console.log('Loaded project data:', data);
+        
+        if (data.project && data.weeks) {
+          const projectTotalWeeks = data.project.total_weeks || 14;
+          
+          // 设置项目实际周数，生成 weeks 数组
+          const weeksArray = Array.from({ length: projectTotalWeeks }, (_, i) => `Week ${i + 1}`);
+          setProjectWeeks(weeksArray);
+          
+          // 初始化数组，长度为项目的实际周数
+          const newPlanned = Array(projectTotalWeeks).fill(0);
+          const newChange = Array(projectTotalWeeks).fill(0);
+          const newOvermanning = Array(projectTotalWeeks).fill(0);
+          const newStacking = Array(projectTotalWeeks).fill(0);
+          const newOvertime = Array(projectTotalWeeks).fill(0);
+
+          // 加载数据库中的数据
+          data.weeks.forEach((week) => {
+            const idx = week.week_number - 1;
+            if (idx < projectTotalWeeks) {
+              newPlanned[idx] = week.planned_work_hours || 0;
+              newChange[idx] = week.change_order_hours || 0;
+              newOvermanning[idx] = week.overmanning || 0;
+              newStacking[idx] = week.stacking_of_trades || 0;
+              newOvertime[idx] = week.overtime_5_10 || 0;
+            }
+          });
+
+          setPlanned(newPlanned);
+          setChange(newChange);
+          setFactors({
+            overmanning: newOvermanning,
+            stacking: newStacking,
+            overtime: newOvertime
+          });
+
+          console.log(`✅ Project data loaded: ${projectTotalWeeks} weeks`);
+        }
+
+      } catch (error) {
+        console.error('Error loading project data:', error);
+        alert('Failed to load project data. Please try again.');
+      }
+    };
+
+    loadProjectData();
+  }, []); // 只在组件挂载时运行一次
+
+  // 根据当前 Tab 计算对应的总损失
+  const calculateTotalLoss = () => {
+    const safeRevised = localRevised.map(v => Number(v) || 0);
+    const safeTotalFactors = localTotalFactors.map(f => Number(f) || 0);
+    
+    if (activeTab === "proactive") {
+      // Proactive: H_r × F
+      return safeRevised.reduce((sum, hr, i) => {
+        return sum + (hr * safeTotalFactors[i]);
+      }, 0).toFixed(2);
+    } else {
+      // Retroactive: H_r × (F / (1 + F))
+      return safeRevised.reduce((sum, hr, i) => {
+        const f = safeTotalFactors[i];
+        return sum + (hr * (f / (1 + f)));
+      }, 0).toFixed(2);
+    }
+  };
+
+  const displayTotalLoss = calculateTotalLoss();
+
+  // 根据当前 Tab 计算对应的每周损失
+  const calculateWeeklyLoss = () => {
+    const safeRevised = localRevised.map(v => Number(v) || 0);
+    const safeTotalFactors = localTotalFactors.map(f => Number(f) || 0);
+    
+    if (activeTab === "proactive") {
+      // Proactive: H_r × F
+      return safeRevised.map((hr, i) => (hr * safeTotalFactors[i]).toFixed(2));
+    } else {
+      // Retroactive: H_r × (F / (1 + F))
+      return safeRevised.map((hr, i) => {
+        const f = safeTotalFactors[i];
+        return (hr * (f / (1 + f))).toFixed(2);
+      });
+    }
+  };
+
+  const weeklyLoss = calculateWeeklyLoss();
+
+  // 保存到数据库
+  const handleSaveToDatabase = async () => {
+    // 获取 project ID（支持 hash 路由）
+    let projectId;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    projectId = urlParams.get('productivityLoss');
+    
+    if (!projectId && window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+      projectId = hashParams.get('productivityLoss');
+    }
+
+    if (!projectId) {
+      alert('Error: No project ID found. Please return to project list and try again.');
+      return;
+    }
+
+    console.log('Saving project ID:', projectId);
+
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        alert('Please login first');
+        navigate('/login');
+        return;
+      }
+
+      // 准备要保存的所有周数据
+      const savePromises = weeks.map((_, weekIndex) => {
+        const weekNumber = weekIndex + 1;
+        const weekData = {
+          planned_work_hours: planned[weekIndex] || 0,
+          change_order_hours: change[weekIndex] || 0,
+          overmanning: factors.overmanning[weekIndex] || 0,
+          stacking_of_trades: factors.stacking[weekIndex] || 0,
+          overtime_5_10: factors.overtime[weekIndex] || 0
+        };
+
+        return fetch(`/api/productivity-losses/${projectId}/weeks/${weekNumber}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(weekData)
+        });
+      });
+
+      // 等待所有保存请求完成
+      const responses = await Promise.all(savePromises);
+      
+      // 检查是否有失败的请求
+      const allSuccess = responses.every(res => res.ok);
+
+      if (allSuccess) {
+        // 计算 Proactive Loss
+        const safeRevised = localRevised.map(v => Number(v) || 0);
+        const safeTotalFactors = localTotalFactors.map(f => Number(f) || 0);
+        
+        const proactiveLoss = safeRevised.reduce((sum, hr, i) => {
+          return sum + (hr * safeTotalFactors[i]);
+        }, 0).toFixed(2);
+        
+        // 计算 Retroactive Loss
+        const retroactiveLoss = safeRevised.reduce((sum, hr, i) => {
+          const f = safeTotalFactors[i];
+          return sum + (hr * (f / (1 + f)));
+        }, 0).toFixed(2);
+        
+        alert(`✅ Success! Data saved to database.\n\nProactive Loss: ${proactiveLoss} hrs\nRetroactive Loss: ${retroactiveLoss} hrs`);
+      } else {
+        throw new Error('Some weeks failed to save');
+      }
+
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      alert('❌ Failed to save data to database. Please try again.');
+    }
+  };
+
+  // Proactive 和 Retroactive 共享所有数据
 
   return (
     <div style={styles.container}>
@@ -63,8 +295,13 @@ function ProductivityAnalysis() {
             📁 My Projects
           </button>
         </div>
-        <button style={styles.calculateBtn}>Calculate Productivity Loss</button>
-        <div style={styles.totalBox}>Total Loss: <strong>{totalLoss}</strong> hrs</div>
+        <button 
+          onClick={handleSaveToDatabase} 
+          style={styles.calculateBtn}
+        >
+          Calculate and Save to Database
+        </button>
+        <div style={styles.totalBox}>Total Loss: <strong>{displayTotalLoss}</strong> hrs</div>
       </div>
 
       {/* Table Wrapper */}
@@ -87,12 +324,20 @@ function ProductivityAnalysis() {
                 <td key={i} style={styles.dataCell}>
                   <input
                     type="number"
-                    value={val}
+                    value={val === 0 ? '' : val}
                     onChange={(e) => {
                       const newArr = [...planned];
-                      newArr[i] = parseFloat(e.target.value) || 0;
+                      newArr[i] = e.target.value === '' ? 0 : parseFloat(e.target.value);
                       setPlanned(newArr);
                     }}
+                    onBlur={(e) => {
+                      // 失焦时格式化为两位小数
+                      const newArr = [...planned];
+                      const currentValue = Number(newArr[i]) || 0;
+                      newArr[i] = parseFloat(currentValue.toFixed(2));
+                      setPlanned(newArr);
+                    }}
+                    placeholder="0.00"
                     style={styles.input}
                   />
                 </td>
@@ -106,12 +351,20 @@ function ProductivityAnalysis() {
                 <td key={i} style={styles.dataCell}>
                   <input
                     type="number"
-                    value={val}
+                    value={val === 0 ? '' : val}
                     onChange={(e) => {
                       const newArr = [...change];
-                      newArr[i] = parseFloat(e.target.value) || 0;
+                      newArr[i] = e.target.value === '' ? 0 : parseFloat(e.target.value);
                       setChange(newArr);
                     }}
+                    onBlur={(e) => {
+                      // 失焦时格式化为两位小数
+                      const newArr = [...change];
+                      const currentValue = Number(newArr[i]) || 0;
+                      newArr[i] = parseFloat(currentValue.toFixed(2));
+                      setChange(newArr);
+                    }}
+                    placeholder="0.00"
                     style={styles.input}
                   />
                 </td>
@@ -121,31 +374,12 @@ function ProductivityAnalysis() {
             {/* Revised Hours */}
             <tr style={styles.revisedRow}>
               <td style={styles.stickyCellRevised}><strong>Revised Hours</strong></td>
-              {revised.map((r, i) => (
-                <td key={i} style={styles.revisedCell}>{r}</td>
+              {localRevised.map((r, i) => (
+                <td key={i} style={styles.revisedCell}>
+                  {Number(r).toFixed(2)}
+                </td>
               ))}
             </tr>
-
-            {/* Retroactive Only: Actual Hours */}
-            {activeTab === "retroactive" && (
-              <tr style={styles.actualRow}>
-                <td style={styles.stickyCellActual}><strong>Actual Hours</strong></td>
-                {actualHours.map((val, i) => (
-                  <td key={i} style={styles.actualCell}>
-                    <input
-                      type="number"
-                      value={val}
-                      onChange={(e) => {
-                        const newArr = [...actualHours];
-                        newArr[i] = parseFloat(e.target.value) || 0;
-                        setActualHours(newArr);
-                      }}
-                      style={styles.input}
-                    />
-                  </td>
-                ))}
-              </tr>
-            )}
 
             {/* Productivity Factors Header */}
             <tr style={styles.factorHeaderRow}>
@@ -170,12 +404,21 @@ function ProductivityAnalysis() {
                   <input
                     type="number"
                     step="0.01"
-                    value={val}
+                    value={val === 0 ? '' : val}
                     onChange={(e) => {
                       const newFactors = { ...factors };
-                      newFactors.overmanning[i] = parseFloat(e.target.value) || 0;
+                      const inputValue = e.target.value;
+                      newFactors.overmanning[i] = inputValue === '' ? 0 : parseFloat(inputValue);
                       setFactors(newFactors);
                     }}
+                    onBlur={(e) => {
+                      // 失焦时格式化为两位小数
+                      const newFactors = { ...factors };
+                      const currentValue = Number(newFactors.overmanning[i]) || 0;
+                      newFactors.overmanning[i] = parseFloat(currentValue.toFixed(2));
+                      setFactors(newFactors);
+                    }}
+                    placeholder="0.00"
                     style={styles.input}
                   />
                 </td>
@@ -190,12 +433,21 @@ function ProductivityAnalysis() {
                   <input
                     type="number"
                     step="0.01"
-                    value={val}
+                    value={val === 0 ? '' : val}
                     onChange={(e) => {
                       const newFactors = { ...factors };
-                      newFactors.stacking[i] = parseFloat(e.target.value) || 0;
+                      const inputValue = e.target.value;
+                      newFactors.stacking[i] = inputValue === '' ? 0 : parseFloat(inputValue);
                       setFactors(newFactors);
                     }}
+                    onBlur={(e) => {
+                      // 失焦时格式化为两位小数
+                      const newFactors = { ...factors };
+                      const currentValue = Number(newFactors.stacking[i]) || 0;
+                      newFactors.stacking[i] = parseFloat(currentValue.toFixed(2));
+                      setFactors(newFactors);
+                    }}
+                    placeholder="0.00"
                     style={styles.input}
                   />
                 </td>
@@ -210,12 +462,21 @@ function ProductivityAnalysis() {
                   <input
                     type="number"
                     step="0.01"
-                    value={val}
+                    value={val === 0 ? '' : val}
                     onChange={(e) => {
                       const newFactors = { ...factors };
-                      newFactors.overtime[i] = parseFloat(e.target.value) || 0;
+                      const inputValue = e.target.value;
+                      newFactors.overtime[i] = inputValue === '' ? 0 : parseFloat(inputValue);
                       setFactors(newFactors);
                     }}
+                    onBlur={(e) => {
+                      // 失焦时格式化为两位小数
+                      const newFactors = { ...factors };
+                      const currentValue = Number(newFactors.overtime[i]) || 0;
+                      newFactors.overtime[i] = parseFloat(currentValue.toFixed(2));
+                      setFactors(newFactors);
+                    }}
+                    placeholder="0.00"
                     style={styles.input}
                   />
                 </td>
@@ -225,21 +486,19 @@ function ProductivityAnalysis() {
             {/* Total Factors */}
             <tr style={styles.totalFactorsRow}>
               <td style={styles.stickyCellTotal}><strong>Total Factors</strong></td>
-              {totalFactors.map((val, i) => (
-                <td key={i} style={styles.totalFactorsCell}>{val.toFixed(2)}</td>
+              {localTotalFactors.map((val, i) => (
+                <td key={i} style={styles.totalFactorsCell}>
+                  {Number(val).toFixed(2)}
+                </td>
               ))}
             </tr>
 
             {/* Estimated Loss of Productivity */}
             <tr style={styles.estimatedLossRow}>
               <td style={styles.stickyCellLoss}>
-                <strong>
-                  {activeTab === "proactive" 
-                    ? "Estimated Loss of Productivity" 
-                    : "Actual Loss of Productivity"}
-                </strong>
+                <strong>Estimated Loss of Productivity</strong>
               </td>
-              {estimatedLoss.map((val, i) => (
+              {weeklyLoss.map((val, i) => (
                 <td key={i} style={styles.estimatedLossCell}>{val}</td>
               ))}
             </tr>
@@ -375,17 +634,6 @@ const styles = {
     zIndex: 5,
     minWidth: "180px",
   },
-  stickyCellActual: {
-    position: "sticky",
-    left: 0,
-    backgroundColor: "#d1ecf1",
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    border: "1px solid #ccc",
-    fontWeight: "600",
-    zIndex: 5,
-    minWidth: "180px",
-  },
   stickyCellTotal: {
     position: "sticky",
     left: 0,
@@ -423,17 +671,8 @@ const styles = {
     backgroundColor: "#fff3cd",
     fontWeight: "500",
   },
-  actualCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.4rem",
-    backgroundColor: "#d1ecf1",
-  },
   revisedRow: {
     backgroundColor: "#fff3cd",
-  },
-  actualRow: {
-    backgroundColor: "#d1ecf1",
   },
   factorHeaderRow: {
     backgroundColor: "#e8e8e8",
