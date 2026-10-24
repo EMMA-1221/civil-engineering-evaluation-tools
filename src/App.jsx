@@ -14,8 +14,9 @@ const ProTool = lazy(() => import("./pages/ProTool.jsx"));
 const Factors = lazy(() => import("./pages/Factors.jsx"));
 const ProductivityAnalysis = lazy(() => import("./pages/ProductivityAnalysis.jsx"));
 const ProductivityLossList = lazy(() => import("./pages/Productivitylosslist.jsx"));
+const Admin = lazy(() => import("./pages/Admin.jsx"));
 
-const protectedPage = page => <ProtectedRoute>{page}</ProtectedRoute>;
+const protectedPage = (page, requireAdmin = false) => <ProtectedRoute requireAdmin={requireAdmin}>{page}</ProtectedRoute>;
 // A stable data router lets editors block SPA links and browser history changes.
 // Authentication stays inside the router and above every existing page.
 const router = createHashRouter([{
@@ -33,6 +34,7 @@ const router = createHashRouter([{
     { path: "proactive", element: protectedPage(<ProductivityAnalysis />) },
     { path: "retroactive", element: protectedPage(<ProductivityAnalysis />) },
     { path: "productivity-losses", element: protectedPage(<ProductivityLossList />) },
+    { path: "admin", element: protectedPage(<Admin />, true) },
     { path: "*", element: <div className="hcg-not-found"><span className="hcg-eyebrow">Page not found</span><h1>Let’s find your way back.</h1><Link className="hcg-button" to="/">Return to workspace<Icon name="arrow-right" /></Link></div> },
   ],
 }]);
@@ -45,6 +47,7 @@ function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const menuTrigger = useRef(null);
@@ -74,11 +77,12 @@ function AppContent() {
       <a className="hcg-skip" href="#hcg-main" onClick={event => {event.preventDefault(); document.getElementById("hcg-main")?.focus();}}>Skip to content</a>
       <header className="hcg-site-header">
         <Link className="hcg-brand" to="/" onClick={closeMenu} aria-label="HCG WAY home"><span className="hcg-brand-name">HCG WAY<span className="hcg-brand-dot" /></span><span className="hcg-brand-caption">Engineering intelligence</span></Link>
-        <nav className="hcg-site-nav" aria-label="Main navigation">
+        <nav className={`hcg-site-nav${isAdmin ? ' hcg-admin-navigation' : ''}`} aria-label="Main navigation">
           {user && <NavLink className="hcg-overview-link" to="/" end onClick={closeMenu}>Workspace</NavLink>}
+          {isAdmin && <NavLink className="hcg-admin-nav" to="/admin" onClick={closeMenu}><Icon name="shield" size={15} />Admin</NavLink>}
           {user ? <div className="hcg-account" ref={menuRef}>
             <button className="hcg-account-trigger" ref={menuTrigger} type="button" aria-expanded={menuOpen} aria-controls="hcg-account-links" onClick={() => setMenuOpen(!menuOpen)}><span className="hcg-avatar">{(user.username || "U").slice(0,1).toUpperCase()}</span><span className="hcg-account-name">{user.username}</span><Icon name="chevron" size={14} /></button>
-            {menuOpen && <div id="hcg-account-links" className="hcg-account-links"><div className="hcg-account-summary"><strong>{user.username}</strong><span>{user.email}</span></div><Link to="/bid" onClick={closeMenu}>Bid assessments<Icon name="arrow-up-right" size={15} /></Link><Link to="/productivity-losses" onClick={closeMenu}>Productivity projects<Icon name="arrow-up-right" size={15} /></Link><button type="button" onClick={handleLogout}>Sign out<Icon name="logout" size={15} /></button></div>}
+            {menuOpen && <div id="hcg-account-links" className="hcg-account-links"><div className="hcg-account-summary"><strong>{user.username}</strong><span>{user.email}</span>{isAdmin && <span className="hcg-account-role">Administrator</span>}</div>{isAdmin && <Link to="/admin" onClick={closeMenu}>Admin console<Icon name="shield" size={15} /></Link>}<Link to="/bid" onClick={closeMenu}>Bid assessments<Icon name="arrow-up-right" size={15} /></Link><Link to="/productivity-losses" onClick={closeMenu}>Productivity projects<Icon name="arrow-up-right" size={15} /></Link><button type="button" onClick={handleLogout}>Sign out<Icon name="logout" size={15} /></button></div>}
           </div> : !isLogin && <Link to="/login" className="hcg-nav-signin" onClick={closeMenu}>Sign in<Icon name="arrow-right" size={15} /></Link>}
         </nav>
       </header>

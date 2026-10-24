@@ -9,6 +9,7 @@ const paths = {
   "eye-off": <><path d="m3 3 18 18M10.6 5.1A12.6 12.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.3 4.3M6.3 6.3A19 19 0 0 0 2 12s3.5 7 10 7c1.7 0 3.2-.5 4.6-1.2M10 10a2.8 2.8 0 0 0 4 4" /></>,
   logout: <><path d="M9 4H4v16h5M10 12h11m-4-4 4 4-4 4" /></>,
   check: <path d="m5 12 4 4L19 6" />,
+  shield: <><path d="m12 3 8 3v6c0 4-4 7-8 9-4-2-8-5-8-9V6l8-3Z" /><path d="m8.5 11.5 2.5 2.5 4.5-5" /></>,
 };
 
 export default function Icon({ name, size = 18, className = "" }) {

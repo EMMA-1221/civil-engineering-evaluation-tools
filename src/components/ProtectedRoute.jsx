@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useAuth } from "../hooks/useAuth";
 import { tokenIsExpired } from "../authSession";
 
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({ children, requireAdmin = false }) {
   const location = useLocation();
   const { token, sessionVersion, logout, syncSession, isCurrentSession, acceptVerifiedUser } = useAuth();
   const [check, setCheck] = useState(0);
@@ -44,7 +44,7 @@ export default function ProtectedRoute({ children }) {
         }
         if (!response.ok) throw new Error('Session verification is temporarily unavailable. Please try again.');
         if (!acceptVerifiedUser(expected, data.user)) { logout(expected); return; }
-        setVerification({ token, version: sessionVersion, key: checkKey });
+        setVerification({ token, version: sessionVersion, key: checkKey, role: data.user.role });
       })
       .catch(() => {
         if (!isCurrent()) return;
@@ -54,6 +54,8 @@ export default function ProtectedRoute({ children }) {
   }, [token, sessionVersion, expired, checkKey, logout, isCurrentSession, acceptVerifiedUser]);
 
   if (!token || expired) return <Navigate to="/login" replace state={{from:location}} />;
+  const roleAllowed = !requireAdmin || verification.role === 'admin';
+  if (isVerified && !roleAllowed) return <section className="hcg-access-denied" role="alert"><span className="hcg-eyebrow">Restricted area</span><h1>Administrator access required.</h1><p>Your account can use the engineering tools, but this page is reserved for administrators.</p><Link to="/" className="hcg-button">Return to workspace</Link></section>;
   return <>
     {!isVerified && (failure.key === checkKey
       ? <div className="hcg-route-loader" role="alert"><p>{failure.message}</p><button type="button" className="hcg-button" onClick={() => { syncSession(); setCheck(value => value + 1); }}>Try again</button></div>
@@ -61,7 +63,7 @@ export default function ProtectedRoute({ children }) {
     {/* Rechecking focus or a mode switch must hide stale access without losing
         an already authenticated editor's unsaved work. Account changes remount it. */}
     <div key={sessionVersion} hidden={!isVerified} inert={!isVerified}>
-      {hasVerifiedSession ? children : null}
+      {hasVerifiedSession && roleAllowed ? children : null}
     </div>
   </>;
 }
