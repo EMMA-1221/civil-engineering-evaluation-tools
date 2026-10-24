@@ -57,25 +57,26 @@
 .hcg-home { max-width:1240px; margin:0 auto; padding:38px 6% 45px; display:grid; grid-template-columns:.92fr 1.08fr; gap:8%; align-items:center; min-height:calc(100svh - 190px); }
 .hcg-home-story { padding-bottom:40px; }
 .hcg-home-story h1 { font-size:clamp(45px,4.7vw,69px); font-weight:450; line-height:1.06; letter-spacing:-2.8px; margin:26px 0 25px; }
-.hcg-home-story > p { font-size:14px; line-height:1.7; color:#4d5d72; margin:0; }
+.hcg-home-story > p { font-size:16px; line-height:1.7; color:#3f5066; margin:0; }
 .hcg-story-foot { display:flex; flex-direction:column; gap:19px; margin-top:38px; font-size:9px; font-weight:500; letter-spacing:1.4px; text-transform:uppercase; }
 .hcg-short-rule { display:block; width:40px; height:1px; background:#526b85; }
 .hcg-tool-collection { width:100%; min-width:0; }
 .hcg-tool-sheet { border:1px solid #ffffffad; background:rgba(239,244,252,.83); border-radius:27px; backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px); box-shadow:0 22px 65px #233b5921; overflow:hidden; }
 .hcg-tool-entry { padding:28px 32px 31px; }
 .hcg-tool-entry + .hcg-tool-entry { border-top:1px solid #889bb437; }
-.hcg-tool-label { display:flex; gap:16px; font-size:10px; color:#596b82; margin-bottom:17px; }
+.hcg-tool-label { display:flex; gap:16px; font-size:12px; color:#52647b; margin-bottom:17px; }
 .hcg-tool-label span:first-child { font-variant-numeric:tabular-nums; color:#637d9c; }
-.hcg-tool-label span:last-child { letter-spacing:1.2px; text-transform:uppercase; font-size:9px; }
+.hcg-tool-label span:last-child { letter-spacing:1.2px; text-transform:uppercase; font-size:11px; }
 .hcg-tool-entry h2 { font-size:31px; font-weight:500; line-height:1.13; letter-spacing:-1px; margin:0 0 13px; }
-.hcg-tool-entry p { font-size:12px; color:#5b6b80; line-height:1.65; margin:0 0 22px; max-width:305px; }
+.hcg-tool-entry p { font-size:16px; color:#526278; line-height:1.65; margin:0 0 22px; max-width:390px; }
 .hcg-tool-actions { display:flex; align-items:start; flex-direction:column; gap:9px; }
 .hcg-button, .hcg-app a.hcg-button { display:inline-flex; align-items:center; justify-content:center; gap:20px; padding:12px 20px; min-height:44px; color:#fff; background:var(--hcg-blue); border:1px solid var(--hcg-blue); border-radius:30px; font-size:12px; font-weight:500; transition:background .18s,box-shadow .18s; line-height:1.4; text-align:center; }
 .hcg-button:hover, .hcg-app a.hcg-button:hover { color:#fff; background:#254f9b; box-shadow:0 6px 16px #274d8220; }
 .hcg-button:disabled { opacity:.65; }
-.hcg-text-link { display:inline-flex; align-items:center; gap:17px; font-size:12px; font-weight:550; color:var(--hcg-blue)!important; }
+.hcg-text-link { display:inline-flex; align-items:center; gap:17px; font-size:18px; line-height:1.45; font-weight:600; color:#244fa0!important; }
+.hcg-text-link svg { flex-shrink:0; width:20px; height:20px; }
 .hcg-text-link:hover { text-decoration:underline; text-underline-offset:5px; }
-.hcg-secondary-link { display:inline-flex; align-items:center; gap:13px; font-size:11px; color:#5c6c80!important; }
+.hcg-secondary-link { display:inline-flex; align-items:center; gap:13px; font-size:15px; color:#526278!important; }
 .hcg-secondary-link:hover { color:var(--hcg-blue)!important; }
 .hcg-login-layout { display:flex; justify-content:flex-end; align-items:center; max-width:1190px; margin:0 auto; padding:48px 7% 65px; min-height:calc(100svh - 190px); }
 .hcg-login-panel { width:420px; max-width:100%; min-width:0; padding:37px 33px 30px; border:1px solid #ffffffcc; background:rgba(241,245,253,.9); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px); border-radius:29px; box-shadow:0 22px 65px #233b5924; }
@@ -140,7 +141,7 @@
   .hcg-home-story { padding:0; }
   .hcg-home-story h1 { font-size:52px; max-width:500px; margin:21px 0; }
   .hcg-home-story h1 .hcg-desktop-break { display:none; }
-  .hcg-home-story > p { font-size:13px; }
+  .hcg-home-story > p { font-size:16px; }
   .hcg-home-story .hcg-story-foot { display:none; }
   .hcg-tool-entry { padding:27px 30px; }
   .hcg-tool-sheet { border-radius:24px; }
