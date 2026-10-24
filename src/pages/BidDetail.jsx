@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { bidQuestions } from "../bidQuestions";
 import { Modal, Spinner } from "react-bootstrap";
 import "./BidUI.css";
+
+function initAnswers() {
+  const newAnswers = {};
+  Object.values(bidQuestions).forEach(section => section.questions.forEach(q => {
+    newAnswers[q.id] = { answer: null, value: 0 };
+  }));
+  return newAnswers;
+}
 
 function BidDetail() {
   const { id } = useParams();
@@ -25,20 +33,7 @@ function BidDetail() {
   const questionCount = sections.reduce((count, [, section]) => count + section.questions.length, 0);
   const answeredCount = sections.reduce((count, [, section]) => count + section.questions.filter(question => answers[question.id]?.answer).length, 0);
 
-  const initAnswers = () => {
-    const newAnswers = {};
-    Object.values(bidQuestions).forEach(section => section.questions.forEach(q => {
-      newAnswers[q.id] = { answer: null, value: 0 };
-    }));
-    return newAnswers;
-  };
-
-  useEffect(() => {
-    if (id && id !== "new") loadBid();
-    else setAnswers(initAnswers());
-  }, [id]);
-
-  const loadBid = async () => {
+  const loadBid = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -62,7 +57,12 @@ function BidDetail() {
       setError(err.message);
       setAnswers(initAnswers());
     } finally { setLoading(false); }
-  };
+  }, [id, token]);
+
+  useEffect(() => {
+    if (id && id !== "new") loadBid();
+    else setAnswers(initAnswers());
+  }, [id, loadBid]);
 
   // Preserve the original calculation: only Yes answers contribute their assigned value.
   useEffect(() => {
