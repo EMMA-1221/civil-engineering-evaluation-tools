@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../config";
-import { useAuth } from "../Productivitycontext";
+import { useAuth } from "../hooks/useAuth";
 
 export default function ProtectedRoute({ children }) {
   const location = useLocation();
