@@ -1,76 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { API_BASE_URL } from "../config";  // ← 添加这行
+import { useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { API_BASE_URL } from "../config";
+import { useAuth } from "../hooks/useAuth";
 
-function ProtectedRoute({ children }) {
-  const [isVerified, setIsVerified] = useState(null);
+export default function ProtectedRoute({ children }) {
+  const location = useLocation();
+  const { logout } = useAuth();
   const token = localStorage.getItem("token");
+  const [verification, setVerification] = useState({ token:null, valid:null });
+  const isVerified = !token ? false : verification.token === token ? verification.valid : null;
 
   useEffect(() => {
-    if (!token) {
-      setIsVerified(false);
-      return;
-    }
-
-    // 验证token是否有效
-    // ← 这里改了
-    fetch(`${API_BASE_URL}/verify`, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
-      .then(res => {
-        if (res.ok) {
-          setIsVerified(true);
-        } else {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          setIsVerified(false);
-        }
+    if (!token) { logout(); return; }
+    const controller = new AbortController();
+    const isCurrent = () => !controller.signal.aborted && localStorage.getItem("token") === token;
+    fetch(`${API_BASE_URL}/verify`, { headers:{Authorization:`Bearer ${token}`}, signal:controller.signal })
+      .then(response => {
+        if (!isCurrent()) return;
+        if (!response.ok) logout();
+        setVerification({token, valid:response.ok});
       })
       .catch(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setIsVerified(false);
+        if (!isCurrent()) return;
+        logout();
+        setVerification({token, valid:false});
       });
-  }, [token]);
+    return () => controller.abort();
+  }, [token, logout]);
 
-  // 加载中状态
-  if (isVerified === null) {
-    return (
-      <div style={styles.loading}>
-        <div style={styles.spinner}></div>
-        <p>Verifying...</p>
-      </div>
-    );
-  }
-
-  // 未登录，重定向到登录页
-  if (isVerified === false) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // 已登录，显示内容
+  if (isVerified === null) return <div className="hcg-route-loader" role="status"><span className="hcg-route-spinner" /><p>Opening your workspace…</p></div>;
+  if (!isVerified) return <Navigate to="/login" replace state={{from:location}} />;
   return children;
 }
-
-const styles = {
-  loading: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "60vh",
-    color: "#002b5c",
-  },
-  spinner: {
-    border: "4px solid #f3f3f3",
-    borderTop: "4px solid #002b5c",
-    borderRadius: "50%",
-    width: "40px",
-    height: "40px",
-    animation: "spin 1s linear infinite",
-  },
-};
-
-export default ProtectedRoute;

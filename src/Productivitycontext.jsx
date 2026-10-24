@@ -1,10 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-// Productivity Context (原有的)
-const ProductivityContext = createContext();
-
-// Auth Context (新增的 - 用于用户认证)
-export const AuthContext = createContext();
+import React, { useState, useEffect, useCallback } from 'react';
+import { AuthContext, ProductivityContext } from './contexts';
 
 // Auth Provider (新增的)
 export function AuthProvider({ children }) {
@@ -29,17 +24,17 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const login = (userData, token) => {
+  const login = useCallback((userData, token) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-  };
+  }, []);
 
   const value = {
     user,
@@ -116,22 +111,4 @@ export function ProductivityProvider({ children }) {
       {children}
     </ProductivityContext.Provider>
   );
-}
-
-// 自定义Hook来使用Context
-export function useProductivity() {
-  const context = useContext(ProductivityContext);
-  if (!context) {
-    throw new Error('useProductivity must be used within a ProductivityProvider');
-  }
-  return context;
-}
-
-// 新增：自定义Hook来使用AuthContext
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 }

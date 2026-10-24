@@ -1,225 +1,93 @@
-import React, { useState } from "react";
-import { HashRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
-import { Navbar, Nav, Container, Dropdown, Button } from "react-bootstrap";
-import BidList from "./pages/BidList.jsx";
-import BidDetail from "./pages/BidDetail.jsx";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { createHashRouter, RouterProvider, Outlet, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { AuthProvider } from "./Productivitycontext";
+import { useAuth } from "./hooks/useAuth";
 import Home from "./pages/Home.jsx";
-import { ProductivityProvider, AuthProvider } from './Productivitycontext';
-import ProTool from "./pages/ProTool.jsx";
-import Factors from "./pages/Factors.jsx";
-import ProductivityAnalysis from "./pages/ProductivityAnalysis.jsx"; // 新的统一页面
 import Login from "./pages/Login.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import ProductivityLossList from './pages/Productivitylosslist';
+import Icon from "./components/Icon.jsx";
+import "./design-system.css";
 
-import "bootstrap/dist/css/bootstrap.min.css";
+const BidList = lazy(() => import("./pages/BidList.jsx"));
+const BidDetail = lazy(() => import("./pages/BidDetail.jsx"));
+const ProTool = lazy(() => import("./pages/ProTool.jsx"));
+const Factors = lazy(() => import("./pages/Factors.jsx"));
+const ProductivityAnalysis = lazy(() => import("./pages/ProductivityAnalysis.jsx"));
+const ProductivityLossList = lazy(() => import("./pages/Productivitylosslist.jsx"));
 
-function App() {
-  return (
-    <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </Router>
-  );
+const protectedPage = page => <ProtectedRoute>{page}</ProtectedRoute>;
+// A stable data router lets editors block SPA links and browser history changes.
+// Authentication stays inside the router and above every existing page.
+const router = createHashRouter([{
+  path: "/",
+  element: <AuthProvider><AppContent /></AuthProvider>,
+  children: [
+    { index: true, element: protectedPage(<Home />) },
+    { path: "login", element: <Login /> },
+    { path: "bid", element: protectedPage(<BidList />) },
+    { path: "bid/new", element: protectedPage(<BidDetail />) },
+    { path: "bid/:id", element: protectedPage(<BidDetail />) },
+    { path: "pro", element: protectedPage(<ProTool />) },
+    { path: "factors", element: protectedPage(<Factors />) },
+    { path: "productivity-analysis", element: protectedPage(<ProductivityAnalysis />) },
+    { path: "proactive", element: protectedPage(<ProductivityAnalysis />) },
+    { path: "retroactive", element: protectedPage(<ProductivityAnalysis />) },
+    { path: "productivity-losses", element: protectedPage(<ProductivityLossList />) },
+    { path: "*", element: <div className="hcg-not-found"><span className="hcg-eyebrow">Page not found</span><h1>Let’s find your way back.</h1><Link className="hcg-button" to="/">Return to workspace<Icon name="arrow-right" /></Link></div> },
+  ],
+}]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
 
 function AppContent() {
+  const location = useLocation();
   const navigate = useNavigate();
-  const userStr = localStorage.getItem("user");
-  const user = userStr ? JSON.parse(userStr) : null;
+  const { user, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const menuTrigger = useRef(null);
+  const publicPage = location.pathname === "/" || location.pathname === "/login";
+  const isLogin = location.pathname === "/login";
+  const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const outside = event => { if (!menuRef.current?.contains(event.target)) setMenuOpen(false); };
+    const escape = event => { if (event.key === "Escape") { setMenuOpen(false); menuTrigger.current?.focus(); } };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
+  }, [menuOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    const request = new Event("hcg-before-signout", { cancelable: true });
+    if (!window.dispatchEvent(request)) return;
+    logout();
+    closeMenu();
     navigate("/login");
   };
 
   return (
-    <div style={{ backgroundColor: "#f4f7fb", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      
-      {/* --- NAVIGATION BAR --- */}
-      <Navbar
-        expand="lg"
-        variant="dark"
-        style={{
-          background: "linear-gradient(90deg, #001f4b 0%, #115395ff 50%, #1c69a9ff 100%)",
-          padding: "1rem 2rem",
-        }}
-      >
-        <Container fluid>
-          {/* LOGO */}
-          <Navbar.Brand
-            as={Link}
-            to="/"
-            style={{
-              fontFamily: "'Orbitron', sans-serif",
-              fontSize: "1.8rem",
-              fontWeight: 900,
-              letterSpacing: "3px",
-              background: "linear-gradient(135deg, #ffffff 0%, #bbdefb 40%, #64b5f6 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            HCG WAY
-            <div style={{ fontSize: "0.6rem", letterSpacing: "2px", textTransform: "uppercase", marginTop: "-3px" }}>
-              Engineering Intelligence
-            </div>
-          </Navbar.Brand>
-
-          <Navbar.Toggle aria-controls="nav" />
-
-          <Navbar.Collapse id="nav">
-            <Nav className="ms-auto" style={{ alignItems: "center", gap: "1.4rem" }}>
-              
-              {/* HOME */}
-              <Nav.Link
-                as={Link}
-                to="/"
-                style={{
-                  color: "white",
-                  fontWeight: 600,
-                  fontFamily: "'Orbitron', sans-serif",
-                }}
-              >
-                Home
-              </Nav.Link>
-
-              {/* TOOLS DROPDOWN */}
-              <Dropdown>
-                <Dropdown.Toggle
-                  variant="outline-light"
-                  style={{
-                    fontWeight: 600,
-                    fontFamily: "'Orbitron', sans-serif",
-                    border: "none",
-                  }}
-                >
-                  Tools
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item as={Link} to="/bid"> BID </Dropdown.Item>
-                  <Dropdown.Item as={Link} to="/pro"> Productivity loss</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-
-              {/* USER MENU */}
-              {user ? (
-                <Dropdown align="end">
-                  <Dropdown.Toggle
-                    variant="light"
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.25)",
-                      border: "none",
-                      color: "white",
-                      fontWeight: 600,
-                      padding: "0.45rem 1rem",
-                      borderRadius: "8px",
-                      backdropFilter: "blur(4px)",
-                    }}
-                  >
-                    👤 {user.username}
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu style={{ width: "250px" }}>
-                    <Dropdown.Header>
-                      <div style={{ fontWeight: "bold", fontSize: "1rem" }}>{user.username}</div>
-                      <small style={{ color: "#555" }}>{user.email}</small>
-                    </Dropdown.Header>
-
-                    <Dropdown.Divider />
-
-                    {/* My Projects Section */}
-                    <Dropdown.ItemText style={{ 
-                      fontSize: "0.75rem", 
-                      fontWeight: "600", 
-                      color: "#999",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px"
-                    }}>
-                      My Projects
-                    </Dropdown.ItemText>
-                    
-                    <Dropdown.Item onClick={() => navigate("/productivity-losses")}>
-                       Productivity Loss Projects
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => navigate("/bid")}>
-                       My Bids
-                    </Dropdown.Item>
-
-                    <Dropdown.Divider />
-
-                    <Dropdown.Item onClick={() => navigate("/profile")}> Profile</Dropdown.Item>
-                    <Dropdown.Item onClick={() => navigate("/settings")}> Settings</Dropdown.Item>
-
-                    <Dropdown.Divider />
-
-                    <Dropdown.Item onClick={handleLogout} style={{ color: "red", fontWeight: 600 }}>
-                       Logout
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              ) : (
-                <Button
-                  as={Link}
-                  to="/login"
-                  variant="light"
-                  style={{
-                    fontWeight: 600,
-                    padding: "0.45rem 1.2rem",
-                    borderRadius: "6px",
-                  }}
-                >
-                  Login
-                </Button>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-
-      {/* --- MAIN CONTENT --- */}
-      <ProductivityProvider>
-        <main style={{ flex: 1, margin: "0", padding: 0 }}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Home />} />
-
-            <Route path="/bid" element={<ProtectedRoute><BidList /></ProtectedRoute>} />
-            <Route path="/bid/new" element={<ProtectedRoute><BidDetail /></ProtectedRoute>} />
-            <Route path="/bid/:id" element={<ProtectedRoute><BidDetail /></ProtectedRoute>} />
-            
-            <Route path="/pro" element={<ProtectedRoute><ProTool /></ProtectedRoute>} />
-            <Route path="/factors" element={<ProtectedRoute><Factors /></ProtectedRoute>} />
-            
-            {/* 新的统一路由 - 替代 proactive 和 retroactive */}
-            <Route path="/productivity-analysis" element={<ProtectedRoute><ProductivityAnalysis /></ProtectedRoute>} />
-            
-            {/* 保留旧路由以防有链接 - 重定向到新页面 */}
-            <Route path="/proactive" element={<ProtectedRoute><ProductivityAnalysis /></ProtectedRoute>} />
-            <Route path="/retroactive" element={<ProtectedRoute><ProductivityAnalysis /></ProtectedRoute>} />
-            
-            <Route path="/productivity-losses" element={<ProtectedRoute><ProductivityLossList /></ProtectedRoute>} />
-          </Routes>
-        </main>
-      </ProductivityProvider>
-
-      {/* FOOTER */}
-      <footer
-        style={{
-          backgroundColor: "#002b5c",
-          color: "white",
-          textAlign: "center",
-          padding: "1.2rem",
-          fontSize: "0.9rem",
-        }}
-      >
-        © 2025 HCG WAY - Civil & Environmental Engineering, UW-Madison.
-      </footer>
+    <div className={`hcg-app ${publicPage ? "hcg-public" : "hcg-tools"} ${isLogin ? "hcg-auth-page" : ""}`}>
+      <a className="hcg-skip" href="#hcg-main" onClick={event => {event.preventDefault(); document.getElementById("hcg-main")?.focus();}}>Skip to content</a>
+      <header className="hcg-site-header">
+        <Link className="hcg-brand" to="/" onClick={closeMenu} aria-label="HCG WAY home"><span className="hcg-brand-name">HCG WAY<span className="hcg-brand-dot" /></span><span className="hcg-brand-caption">Engineering intelligence</span></Link>
+        <nav className="hcg-site-nav" aria-label="Main navigation">
+          {user && <NavLink className="hcg-overview-link" to="/" end onClick={closeMenu}>Workspace</NavLink>}
+          {user ? <div className="hcg-account" ref={menuRef}>
+            <button className="hcg-account-trigger" ref={menuTrigger} type="button" aria-expanded={menuOpen} aria-controls="hcg-account-links" onClick={() => setMenuOpen(!menuOpen)}><span className="hcg-avatar">{(user.username || "U").slice(0,1).toUpperCase()}</span><span className="hcg-account-name">{user.username}</span><Icon name="chevron" size={14} /></button>
+            {menuOpen && <div id="hcg-account-links" className="hcg-account-links"><div className="hcg-account-summary"><strong>{user.username}</strong><span>{user.email}</span></div><Link to="/bid" onClick={closeMenu}>Bid assessments<Icon name="arrow-up-right" size={15} /></Link><Link to="/productivity-losses" onClick={closeMenu}>Productivity projects<Icon name="arrow-up-right" size={15} /></Link><button type="button" onClick={handleLogout}>Sign out<Icon name="logout" size={15} /></button></div>}
+          </div> : !isLogin && <Link to="/login" className="hcg-nav-signin" onClick={closeMenu}>Sign in<Icon name="arrow-right" size={15} /></Link>}
+        </nav>
+      </header>
+      <main id="hcg-main" className="hcg-main" tabIndex={-1}>
+        <Suspense fallback={<div className="hcg-route-loader" role="status"><span className="hcg-route-spinner" /><p>Opening your workspace…</p></div>}>
+          <Outlet />
+        </Suspense>
+      </main>
+      <footer className="hcg-site-footer"><span>© {new Date().getFullYear()} HCG WAY</span><span>Civil & Environmental Engineering<span className="hcg-footer-separator"> / </span>UW–Madison</span></footer>
     </div>
   );
 }
-
-export default App;
