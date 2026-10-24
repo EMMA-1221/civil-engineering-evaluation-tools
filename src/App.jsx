@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { HashRouter, Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ProductivityProvider, AuthProvider } from "./Productivitycontext";
+import { createHashRouter, RouterProvider, Outlet, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { AuthProvider } from "./Productivitycontext";
 import { useAuth } from "./hooks/useAuth";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
@@ -15,8 +15,30 @@ const Factors = lazy(() => import("./pages/Factors.jsx"));
 const ProductivityAnalysis = lazy(() => import("./pages/ProductivityAnalysis.jsx"));
 const ProductivityLossList = lazy(() => import("./pages/Productivitylosslist.jsx"));
 
+const protectedPage = page => <ProtectedRoute>{page}</ProtectedRoute>;
+// A stable data router lets editors block SPA links and browser history changes.
+// Authentication stays inside the router and above every existing page.
+const router = createHashRouter([{
+  path: "/",
+  element: <AuthProvider><AppContent /></AuthProvider>,
+  children: [
+    { index: true, element: protectedPage(<Home />) },
+    { path: "login", element: <Login /> },
+    { path: "bid", element: protectedPage(<BidList />) },
+    { path: "bid/new", element: protectedPage(<BidDetail />) },
+    { path: "bid/:id", element: protectedPage(<BidDetail />) },
+    { path: "pro", element: protectedPage(<ProTool />) },
+    { path: "factors", element: protectedPage(<Factors />) },
+    { path: "productivity-analysis", element: protectedPage(<ProductivityAnalysis />) },
+    { path: "proactive", element: protectedPage(<ProductivityAnalysis />) },
+    { path: "retroactive", element: protectedPage(<ProductivityAnalysis />) },
+    { path: "productivity-losses", element: protectedPage(<ProductivityLossList />) },
+    { path: "*", element: <div className="hcg-not-found"><span className="hcg-eyebrow">Page not found</span><h1>Let’s find your way back.</h1><Link className="hcg-button" to="/">Return to workspace<Icon name="arrow-right" /></Link></div> },
+  ],
+}]);
+
 export default function App() {
-  return <HashRouter><AuthProvider><ProductivityProvider><AppContent /></ProductivityProvider></AuthProvider></HashRouter>;
+  return <RouterProvider router={router} />;
 }
 
 function AppContent() {
@@ -39,8 +61,13 @@ function AppContent() {
     return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
   }, [menuOpen]);
 
-  const handleLogout = () => { logout(); closeMenu(); navigate("/login"); };
-  const protectedPage = page => <ProtectedRoute>{page}</ProtectedRoute>;
+  const handleLogout = () => {
+    const request = new Event("hcg-before-signout", { cancelable: true });
+    if (!window.dispatchEvent(request)) return;
+    logout();
+    closeMenu();
+    navigate("/login");
+  };
 
   return (
     <div className={`hcg-app ${publicPage ? "hcg-public" : "hcg-tools"} ${isLogin ? "hcg-auth-page" : ""}`}>
@@ -57,20 +84,7 @@ function AppContent() {
       </header>
       <main id="hcg-main" className="hcg-main" tabIndex={-1}>
         <Suspense fallback={<div className="hcg-route-loader" role="status"><span className="hcg-route-spinner" /><p>Opening your workspace…</p></div>}>
-        <Routes>
-          <Route path="/" element={protectedPage(<Home />)} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/bid" element={protectedPage(<BidList />)} />
-          <Route path="/bid/new" element={protectedPage(<BidDetail />)} />
-          <Route path="/bid/:id" element={protectedPage(<BidDetail />)} />
-          <Route path="/pro" element={protectedPage(<ProTool />)} />
-          <Route path="/factors" element={protectedPage(<Factors />)} />
-          <Route path="/productivity-analysis" element={protectedPage(<ProductivityAnalysis />)} />
-          <Route path="/proactive" element={protectedPage(<ProductivityAnalysis />)} />
-          <Route path="/retroactive" element={protectedPage(<ProductivityAnalysis />)} />
-          <Route path="/productivity-losses" element={protectedPage(<ProductivityLossList />)} />
-          <Route path="*" element={<div className="hcg-not-found"><span className="hcg-eyebrow">Page not found</span><h1>Let’s find your way back.</h1><Link className="hcg-button" to="/">Return to workspace<Icon name="arrow-right" /></Link></div>} />
-        </Routes>
+          <Outlet />
         </Suspense>
       </main>
       <footer className="hcg-site-footer"><span>© {new Date().getFullYear()} HCG WAY</span><span>Civil & Environmental Engineering<span className="hcg-footer-separator"> / </span>UW–Madison</span></footer>
