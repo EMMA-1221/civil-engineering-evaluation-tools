@@ -15,6 +15,18 @@ The answers JSON includes `__hcg_bid.version`. New records use version 2. Earlie
 
 Save/load requests are scoped to the active evaluation and cancelled or ignored when navigation makes them stale. Saving locks editing and prevents duplicate submissions. Errors remain visible without navigating away.
 
+## Productivity analysis
+
+The calculator and reference table share a catalog of all **19 factors and 57 severity coefficients** transcribed from `ProductivityV1.6.xlsm`, including Turnover, negative Second Shift values, and fractional percentages such as Owner-Furnished Items at 4.3%. Source workbooks were inspected without executing VBA. Static, independent fixtures record source cells and sample results; the private workbooks are not part of this repository.
+
+Proactive and Retroactive retain **separate inputs**, as in the workbook. Each project has a common duration of 1–52 weeks, while each method retains its own planned hours, change hours, selected factors, and all 19 raw factor arrays. Removing a factor from the calculation preserves its inputs for later use. Percentage entry uses human units (`22` means 22%); storage and calculation retain unrounded fractions.
+
+For each week, revised hours `H = planned + change`, and `F` is the sum of selected factors. Proactive loss is `H × F`; Retroactive loss is `H − H / (1 + F)`. Totals sum the raw weekly results. Negative values retain the source formula behavior; Retroactive `F = −1` is rejected because its denominator is zero. Display rounding is not written back into saved data.
+
+Both methods save in a single backend transaction with a revision check. Loading an earlier three-factor project copies its inputs into both methods without writing anything. Its first v2 save checks a fingerprint of the old inputs before importing; subsequent saves require the latest revision. Earlier browser versions cannot overwrite an imported v2 project. Old database rows remain as the pre-import recovery snapshot.
+
+Project/account changes cancel stale loads. Unsaved drafts, including unfinished numeric input, are retained while switching methods. A navigation warning protects drafts when leaving the project; sign-out and browser-close warnings are also installed. Invalid or failed loads cannot be edited or saved as empty data. Reset affects only the active method and keeps the project's actual duration. Extending duration preserves inputs; shortening is blocked if either method contains nonzero data in the removed weeks, including hidden factors.
+
 ## Development and checks
 
 ```sh
@@ -25,11 +37,19 @@ npm run check
 
 The development server proxies `/api` to the existing backend on `localhost:8080`; it does not start a backend or database. Keep credentials outside source control.
 
-`npm run check` runs ESLint, 16 model/compatibility regression tests, and the production build. Tests cover all-Yes +149, all-No −149, unselected zero, signed manual adjustments, clearing and restoring defaults, legacy round trips, malformed data, score consistency, and old-client protection.
+`npm run check` runs ESLint, model/compatibility regression tests, and the production build. Bid fixtures cover all 62 questions, their weights, four answer states, the workbook's saved sample, and signed manual overrides. Productivity fixtures cover every catalog coefficient and every week of the original sample: Proactive 1958 and Retroactive 1492.760192390018. Additional tests exercise mode independence, all 19 factors across 52 weeks, raw precision, incomplete/corrupt data, reset/resize behavior, concurrent revisions, transaction failures, legacy import races, and schema validation.
+
+Tests normally use self-contained fixtures and a mock database. Optional integration tests patch a locally supplied original server in memory and exercise its real Express/authentication/legacy routes against the isolated mock database:
+
+```sh
+HCG_BACKEND_SOURCE=/absolute/private/path/server.js npm run check
+```
+
+Without that private source, only those integration cases are explicitly skipped. They do not connect to the production database. `HCG_TEST_TCP=1` opts into a local HTTP listener where binding is permitted; the default transport avoids opening a port.
 
 ## Deployment
 
-Deploy the matching [backend compatibility guard](backend-compat/README.md) **before** the version-2 frontend. It validates new payloads and prevents a browser still running the earlier frontend from overwriting a version-2 record. Existing authentication and ownership checks remain in place. The inspected database already uses JSON answers and a signed integer total, so this change requires no table migration.
+Deploy the matching [backend compatibility guards](backend-compat/README.md) **before** the version-2 frontend. Bid uses the existing JSON answers and signed integer score columns. Productivity requires one additive JSON-document table; the schema utility performs a strict dry-run before any explicit creation. It never alters or drops earlier tables. Authentication and ownership checks remain in place.
 
 Build locally rather than on the small production instance:
 
@@ -44,6 +64,8 @@ Tool pages are loaded on demand. Font declarations use `font-display: swap` with
 
 ## Validation and remaining limits
 
-The version-2 release passed lint, all 16 portable tests, and the production build. A separate deployment test exercised the actual authentication and Bid routes over HTTP with an isolated mock database (10/10 passed). Browser checks covered all nine sections, all 62 controls, default/override scoring, clearing a selection, keyboard expansion, and 320px/390px layouts without horizontal overflow. A clearly labelled production QA record saved all 62 No answers at −149 and retained them after reopening and refreshing. These checks are not a capacity test for 25 concurrent users.
+The earlier Bid v2 deployment passed model and route tests. Browser checks covered all nine sections, all 62 controls, default/override scoring, clearing a selection, keyboard expansion, and 320px/390px layouts without horizontal overflow. A clearly labelled production QA record saved all 62 No answers at −149 and retained them after reopening and refreshing.
 
-Productivity code is unchanged in this release. Its main Proactive and Retroactive formulas match the source workbook, but the calculation/storage model currently supports only three factor classes rather than the workbook’s 19. The reference table omits Turnover. The audit also identified fixed 14-week reset behavior, stale project-load/save risks, and factor precision/unit issues; those require a separate coordinated frontend/backend change. Do not treat the current productivity tool as a complete reproduction of the workbook.
+The current source includes the coordinated Productivity v2 frontend/backend implementation and regression tests. A passing build or mock-database test is not evidence of a completed production deployment, browser acceptance, or support for 25 concurrent users. Record those release checks separately when performed.
+
+The Bid workbook defines no bid/no-bid threshold. Some risk-worded questions still assign positive values for Yes; source parity does not establish that a higher total always means a better project. Blank/toggle behavior and restoring an answer's signed default are deliberate web interactions rather than a reproduction of every VBA side effect. The Productivity page uses sequential week labels; arbitrary workbook column labels and Excel-specific buttons/macros are not reproduced.
