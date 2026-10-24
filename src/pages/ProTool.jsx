@@ -11,7 +11,7 @@ function ProTool() {
         <p className="prod-eyebrow">Productivity · Analysis tools</p>
         <h1 className="pt-title">Understand the hours behind the work.</h1>
         <p className="pt-subtitle">
-          Assess productivity loss with a shared set of inputs for proactive and retroactive analysis.
+          Assess productivity loss with Proactive and Retroactive analysis, using weekly hours and 19 impact factors.
         </p>
       </div>
 
@@ -33,7 +33,7 @@ function ProTool() {
             <span className="prod-eyebrow">01 / Project analysis</span>
             <h2 className="pt-cardTitle">Productivity loss</h2>
             <p className="pt-cardDescription">
-              Calculate productivity losses with both Proactive and Retroactive methods. Switch between analysis modes seamlessly with shared input data.
+              Calculate anticipated additional hours or assess lost hours. Each method keeps its own weekly inputs.
             </p>
             <button 
               onClick={() => navigate("/productivity-losses")} 
@@ -65,9 +65,9 @@ function ProTool() {
           <ol className="pt-infoList">
             <li>Create a new project or select an existing one from "My Productivity Loss Projects"</li>
             <li>Open the Productivity Analysis tool</li>
-            <li>Switch between Proactive and Retroactive tabs as needed - your data is shared between both modes</li>
+            <li>Choose Proactive or Retroactive; each method retains its own inputs</li>
             <li>Input your project data including work hours and impact factors</li>
-            <li>Review the calculated productivity losses and generate reports</li>
+            <li>Review the calculated productivity losses and save both methods together</li>
           </ol>
         </div>
       </div>
