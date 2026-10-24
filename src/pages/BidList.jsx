@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { Spinner } from "react-bootstrap";
+import { useAuth } from "../hooks/useAuth";
 import "./BidUI.css";
 
 function BidList() {
@@ -10,9 +11,7 @@ function BidList() {
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const userStr = localStorage.getItem("user");
-  const user = userStr ? JSON.parse(userStr) : null;
+  const { token, user } = useAuth();
   const isAdmin = user?.role === "admin";
 
   const fetchBids = useCallback(async () => {
