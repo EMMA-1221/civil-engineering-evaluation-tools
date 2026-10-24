@@ -40,6 +40,7 @@ Build locally rather than on the small production instance. The optional gzip st
 - Gave the administrator table explicit column widths and switched the list to labeled cards at 1100px. Date labels have more room and stack on phones; assessment questions keep their separate 850px layout breakpoint.
 - Both workspace primary links use matching 18px semibold text and a darker blue, with 16px tool descriptions and a 15px secondary link. They remain text links. Bid buttons retain larger text in compact 43px/35px desktop controls; the original 44px touch minimum is preserved.
 - The blank answer option reads “Select…” without changing its empty value. Each factor now states its answer and counting status, such as “Unanswered · not counted” or “Yes · counted in total”; only Yes answers contribute their assigned value, as before.
+- Refined the account-page heading using the existing DM Sans family: 500 weight to match field labels, relaxed -0.2px tracking, and 1.28 line height. Desktop/mobile sizes remain 32px/29px, with the existing two-line welcome message, card and controls preserved.
 
 ## Validation
 
