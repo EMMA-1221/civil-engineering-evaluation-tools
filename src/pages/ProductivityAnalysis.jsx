@@ -44,7 +44,7 @@ function loadFailure(status, data) {
   if (status === 401) return 'Your session has expired. Sign in again to load this project.';
   if (status === 403) return 'You do not have access to this project.';
   if (status === 404) return 'This project could not be found.';
-  return typeof data?.error === 'string' ? data.error : 'The saved analysis could not be loaded. Your saved data has not been replaced.';
+  return typeof data?.msg === 'string' ? data.msg : typeof data?.error === 'string' ? data.error : 'The saved analysis could not be loaded. Your saved data has not been replaced.';
 }
 
 function validatedReply(data, projectId) {
@@ -98,6 +98,10 @@ function ProductivityEditor({ projectId, token, mode }) {
   const inputRefs = useRef({});
   const tabs = useRef({});
   const navigationWarning = useRef(null);
+  const [resetRequested, setResetRequested] = useState(false);
+  const resetTrigger = useRef(null);
+  const resetCancel = useRef(null);
+  const resetWasOpen = useRef(false);
   const blocker = useBlocker(useCallback(({ currentLocation, nextLocation }) => {
     const nextId = new URLSearchParams(nextLocation.search).get('productivityLoss')
       || new URLSearchParams(window.location.search).get('productivityLoss') || '';
@@ -154,12 +158,19 @@ function ProductivityEditor({ projectId, token, mode }) {
   }, [blocker.state]);
 
   useEffect(() => {
+    if (resetRequested) resetCancel.current?.focus();
+    else if (resetWasOpen.current) resetTrigger.current?.focus();
+    resetWasOpen.current = resetRequested;
+  }, [resetRequested]);
+
+  useEffect(() => {
     const controller = new AbortController();
     let current = true;
     const load = async () => {
       setLoading(true);
       setLoadError('');
       setMessage(null);
+      setResetRequested(false);
       replaceSnapshot(emptySnapshot());
       replaceDrafts({});
       setCustomCells({});
@@ -205,7 +216,7 @@ function ProductivityEditor({ projectId, token, mode }) {
   }, [snapshot.document, drafts]);
   const currentResult = calculations[mode];
   const durationPending = Boolean(document && durationDraft !== String(document.totalWeeks));
-  const disabled = !snapshot.loaded || loading || saving;
+  const disabled = !snapshot.loaded || loading || saving || resetRequested;
   const selectedFactors = analysis?.selectedFactorIds.map(id => PRODUCTIVITY_FACTORS.find(factor => factor.id === id)) ?? [];
   const weeks = Array.from({ length: document?.totalWeeks ?? 0 }, (_, index) => index);
 
@@ -268,7 +279,7 @@ function ProductivityEditor({ projectId, token, mode }) {
   }
 
   function chooseMode(nextMode) {
-    if (saveLock.current) return;
+    if (saveLock.current || resetRequested) return;
     navigate({ pathname: location.pathname, search: `?${new URLSearchParams({ productivityLoss: projectId, mode: nextMode })}` }, { replace: true });
   }
 
@@ -295,9 +306,14 @@ function ProductivityEditor({ projectId, token, mode }) {
 
   function resetCurrent() {
     if (saveLock.current || !snapshotRef.current.loaded) return;
+    setResetRequested(true);
+  }
+
+  function confirmReset() {
+    if (!resetRequested || saveLock.current || !snapshotRef.current.loaded) return;
     const current = snapshotRef.current.document;
     const shared = current.inputMode === 'shared';
-    if (!window.confirm(shared ? 'Clear the shared inputs for both methods? Save afterwards to keep the reset.' : `Clear the ${methodLabel(mode)} inputs? Save afterwards to keep the reset.`)) return;
+    setResetRequested(false);
     const affected = shared ? METHODS : [mode];
     replaceDrafts(Object.fromEntries(Object.entries(draftsRef.current).filter(([, entry]) => !affected.includes(entry.mode))));
     setCustomCells(previous => Object.fromEntries(Object.entries(previous).filter(([key]) => !affected.some(method => key.startsWith(`${method}:`)))));
@@ -390,7 +406,7 @@ function ProductivityEditor({ projectId, token, mode }) {
   }
 
   return <div className="hcg-tools hcg-prod hcg-prod-analysis">
-    <button className="pa-back" type="button" disabled={saving} onClick={goToProjects}>← My projects</button>
+    <button className="pa-back" type="button" disabled={saving || resetRequested} onClick={goToProjects}>← My projects</button>
     <p className="prod-eyebrow">Productivity · Project analysis</p>
     <h1 className="pa-title">{snapshot.project?.project_name || 'Productivity analysis'}</h1>
 
@@ -409,7 +425,7 @@ function ProductivityEditor({ projectId, token, mode }) {
     <div className="pa-tabContainer" role="tablist" aria-label="Calculation method">
       {METHODS.map(method => <button key={method} ref={node => { tabs.current[method] = node; }} type="button" role="tab"
         className={`pa-tab${mode === method ? ' is-active' : ''}`} aria-selected={mode === method}
-        id={`${inputPrefix}-${method}-tab`} aria-controls={`${inputPrefix}-analysis-panel`} disabled={saving}
+        id={`${inputPrefix}-${method}-tab`} aria-controls={`${inputPrefix}-analysis-panel`} disabled={saving || resetRequested}
         tabIndex={mode === method ? 0 : -1} onClick={() => chooseMode(method)}
         onKeyDown={event => {
           if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
@@ -428,6 +444,16 @@ function ProductivityEditor({ projectId, token, mode }) {
       <p className="pa-method-note">{document.inputMode === 'separate'
         ? 'Proactive and Retroactive keep separate inputs. Switching methods preserves your edits in each.'
         : 'Both methods use the same inputs. Editing either method updates both.'}</p>
+      {resetRequested && <section className="pa-message pa-navigation-warning" role="alertdialog"
+        aria-labelledby={`${inputPrefix}-reset-title`} aria-describedby={`${inputPrefix}-reset-description`}
+        onKeyDown={event => { if (event.key === 'Escape') { event.preventDefault(); setResetRequested(false); } }}>
+        <h2 id={`${inputPrefix}-reset-title`}>Reset {document.inputMode === 'shared' ? 'both methods' : methodLabel(mode)} inputs?</h2>
+        <p id={`${inputPrefix}-reset-description`}>Clear inputs across all {document.totalWeeks} weeks. {document.inputMode === 'separate' ? `${methodLabel(mode === 'proactive' ? 'retroactive' : 'proactive')} inputs stay unchanged. ` : ''}The project duration and selected factors stay the same. Save afterwards to keep the reset.</p>
+        <div className="pa-toolbar-actions">
+          <button ref={resetCancel} type="button" className="pa-projectBtn" onClick={() => setResetRequested(false)}>Cancel reset</button>
+          <button type="button" className="pa-resetBtn" onClick={confirmReset}>Confirm reset</button>
+        </div>
+      </section>}
       {snapshot.isLegacy && <p className="pa-import-note">Your original saved weekly inputs are preserved in both methods.{document.inputMode === 'separate' ? ' Each method can now be edited separately.' : ''}</p>}
       {message && <div className={`pa-message${message.kind === 'error' || message.kind === 'conflict' ? ' pa-error' : ''}`} role={message.kind === 'success' ? 'status' : 'alert'}>
         <p>{message.text}</p>{message.kind === 'conflict' && <button type="button" className="pa-projectBtn" disabled={saving} onClick={reloadLatest}>Reload latest saved version</button>}
@@ -444,7 +470,7 @@ function ProductivityEditor({ projectId, token, mode }) {
       </div>
 
       <div className="pa-toolbar">
-        <div className="pa-toolbar-actions"><button type="button" className="pa-resetBtn" disabled={disabled} onClick={resetCurrent}>Reset {document.inputMode === 'shared' ? 'both methods' : methodLabel(mode)}</button></div>
+        <div className="pa-toolbar-actions"><button ref={resetTrigger} type="button" className="pa-resetBtn" disabled={disabled} onClick={resetCurrent}>Reset {document.inputMode === 'shared' ? 'both methods' : methodLabel(mode)}</button></div>
         <div className="pa-save-state" role="status">{saving ? 'Saving both methods…' : dirty ? 'Unsaved changes' : 'Saved inputs loaded'}</div>
         <button type="button" className="pa-calculateBtn" disabled={disabled || !dirty || invalidDrafts.length > 0 || durationPending || Object.keys(calculations.errors).length > 0} onClick={save}>{saving ? 'Saving…' : 'Save both methods'}</button>
         <div className="pa-totalBox">{methodLabel(mode)} total loss: <strong>{displayHours(currentResult?.totalLoss)}</strong> hrs</div>
