@@ -81,7 +81,7 @@
 .bid-question-text { display:grid; grid-template-columns:25px minmax(0,1fr); gap:9px; font-size:16px; line-height:1.55; }
 .bid-factor-number { padding-top:2px; color:var(--hcg-muted,#626e7e); font-size:13px; font-variant-numeric:tabular-nums; }
 .bid-question-text label { cursor:pointer; overflow-wrap:anywhere; }
-.bid-page .bid-select { width:100%; max-width:100%; min-width:0; min-height:39px; padding:7px 26px 7px 10px; color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); border:1px solid var(--hcg-line,#dbe1e8); border-radius:6px; font-size:15px; line-height:1.4; }
+.bid-page .bid-select { width:100%; max-width:100%; min-width:0; min-height:39px; padding:7px 38px 7px 10px; color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); border:1px solid var(--hcg-line,#dbe1e8); border-radius:6px; font-size:15px; line-height:1.4; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23626e7e' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px 16px; }
 .bid-value-controls { display:grid; grid-template-columns:31px minmax(35px,1fr) 31px auto; align-items:center; gap:7px; }
 .bid-step-button { display:grid; place-items:center; width:31px; height:33px; padding:0; border:1px solid var(--hcg-line,#dbe1e8); border-radius:5px; color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); font-size:18px; }
 .bid-step-button:hover:not(:disabled) { background:var(--hcg-soft,#eef2f6); }
@@ -177,3 +177,4 @@
   .bid-page .bid-select,.bid-page .bid-input,.bid-save-modal .bid-input { min-height:44px; font-size:16px; }
 }
 @media(prefers-reduced-motion:reduce) { .bid-button { transition:none; } }
+@media(forced-colors:active) { .bid-page .bid-select { -webkit-appearance:auto; appearance:auto; background-image:none; padding-right:10px; } }
