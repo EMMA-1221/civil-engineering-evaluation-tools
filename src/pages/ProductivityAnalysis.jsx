@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useProductivity } from "../Productivitycontext";
+import { useProductivity } from "../hooks/useProductivity";
 import "./ProductivityUI.css";
 
 function ProductivityAnalysis() {
@@ -16,10 +16,6 @@ function ProductivityAnalysis() {
     setChange,
     factors,
     setFactors,
-    revised,
-    totalFactors,
-    estimatedLoss,
-    totalLoss,
     handleReset,
   } = useProductivity();
 
@@ -131,7 +127,7 @@ function ProductivityAnalysis() {
     };
 
     loadProjectData();
-  }, []); // 只在组件挂载时运行一次
+  }, [navigate, setPlanned, setChange, setFactors]);
 
   // 根据当前 Tab 计算对应的总损失
   const calculateTotalLoss = () => {
@@ -328,7 +324,7 @@ function ProductivityAnalysis() {
                       newArr[i] = e.target.value === '' ? 0 : parseFloat(e.target.value);
                       setPlanned(newArr);
                     }}
-                    onBlur={(e) => {
+                    onBlur={() => {
                       // 失焦时格式化为两位小数
                       const newArr = [...planned];
                       const currentValue = Number(newArr[i]) || 0;
@@ -356,7 +352,7 @@ function ProductivityAnalysis() {
                       newArr[i] = e.target.value === '' ? 0 : parseFloat(e.target.value);
                       setChange(newArr);
                     }}
-                    onBlur={(e) => {
+                    onBlur={() => {
                       // 失焦时格式化为两位小数
                       const newArr = [...change];
                       const currentValue = Number(newArr[i]) || 0;
@@ -411,7 +407,7 @@ function ProductivityAnalysis() {
                       newFactors.overmanning[i] = inputValue === '' ? 0 : parseFloat(inputValue);
                       setFactors(newFactors);
                     }}
-                    onBlur={(e) => {
+                    onBlur={() => {
                       // 失焦时格式化为两位小数
                       const newFactors = { ...factors };
                       const currentValue = Number(newFactors.overmanning[i]) || 0;
@@ -441,7 +437,7 @@ function ProductivityAnalysis() {
                       newFactors.stacking[i] = inputValue === '' ? 0 : parseFloat(inputValue);
                       setFactors(newFactors);
                     }}
-                    onBlur={(e) => {
+                    onBlur={() => {
                       // 失焦时格式化为两位小数
                       const newFactors = { ...factors };
                       const currentValue = Number(newFactors.stacking[i]) || 0;
@@ -471,7 +467,7 @@ function ProductivityAnalysis() {
                       newFactors.overtime[i] = inputValue === '' ? 0 : parseFloat(inputValue);
                       setFactors(newFactors);
                     }}
-                    onBlur={(e) => {
+                    onBlur={() => {
                       // 失焦时格式化为两位小数
                       const newFactors = { ...factors };
                       const currentValue = Number(newFactors.overtime[i]) || 0;
