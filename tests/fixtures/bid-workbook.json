@@ -1,0 +1,2820 @@
+{
+  "fixtureVersion": 1,
+  "source": {
+    "name": "bid Tool1V1.1.xlsm",
+    "sha256": "c8f2d63ddad89089d609e30b0538a255b844024aa3db2d5ad9d5944f2417fc90"
+  },
+  "formulaProvenance": {
+    "normalQuestionCell": "Factors!D10",
+    "normalQuestionFormula": "=IF(B10=\"Yes\",C10,IF(B10=\"No\",C10*(-1),IF(B10=\"N/A\", 0,\"\")))",
+    "resetMacro": "VBA/Module2:CLEAN:33-115",
+    "totalCell": "Factors!F3",
+    "totalFormula": "=SUM(D8:D13)+SUM(D16:D21)+SUM(D24:D28)+SUM(D31:D33)+SUM(D36:D49)+SUM(D52:D61)+SUM(D64:D67)+SUM(D70:D76)+SUM(D79:D85)"
+  },
+  "sections": [
+    {
+      "id": "section1",
+      "title": "Section 1: Relationship with the Design Engineer(s)",
+      "titleCell": "Factors!A7",
+      "questions": [
+        {
+          "id": "S1_Q1",
+          "text": "Have we previously worked with this engineer?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A8",
+            "answer": "Factors!B8",
+            "weight": "Factors!C8",
+            "score": "Factors!D8"
+          },
+          "normalFormula": "=IF(B8=\"Yes\",C8,IF(B8=\"No\",C8*(-1),IF(B8=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No",
+            "N/A"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 4
+          }
+        },
+        {
+          "id": "S1_Q2",
+          "text": "Are the design documents (plans and specifications) complete?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A9",
+            "answer": "Factors!B9",
+            "weight": "Factors!C9",
+            "score": "Factors!D9"
+          },
+          "normalFormula": "=IF(B9=\"Yes\",C9,IF(B9=\"No\",C9*(-1),IF(B9=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No",
+            "N/A"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "No",
+            "score": -2
+          }
+        },
+        {
+          "id": "S1_Q3",
+          "text": "Is the design free of readily apparent problems?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A10",
+            "answer": "Factors!B10",
+            "weight": "Factors!C10",
+            "score": "Factors!D10"
+          },
+          "normalFormula": "=IF(B10=\"Yes\",C10,IF(B10=\"No\",C10*(-1),IF(B10=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B10=\"Yes\",C10,IF(B10=\"No\",C10*(-1),IF(B10=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No",
+            "N/A"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 3
+          }
+        },
+        {
+          "id": "S1_Q4",
+          "text": "Is there a reasonable procedure for the administration of change orders?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A11",
+            "answer": "Factors!B11",
+            "weight": "Factors!C11",
+            "score": "Factors!D11"
+          },
+          "normalFormula": "=IF(B11=\"Yes\",C11,IF(B11=\"No\",C11*(-1),IF(B11=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B11=\"Yes\",C11,IF(B11=\"No\",C11*(-1),IF(B11=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No",
+            "N/A"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "No",
+            "score": -1
+          }
+        },
+        {
+          "id": "S1_Q5",
+          "text": "Is there a reasonable procedure for the administration of punch-list items?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A12",
+            "answer": "Factors!B12",
+            "weight": "Factors!C12",
+            "score": "Factors!D12"
+          },
+          "normalFormula": "=IF(B12=\"Yes\",C12,IF(B12=\"No\",C12*(-1),IF(B12=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B12=\"Yes\",C12,IF(B12=\"No\",C12*(-1),IF(B12=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No",
+            "N/A"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "N/A",
+            "score": 0
+          }
+        },
+        {
+          "id": "S1_Q6",
+          "text": "Is there a reasonable process for the administration/approval of shop drawings and submittals?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A13",
+            "answer": "Factors!B13",
+            "weight": "Factors!C13",
+            "score": "Factors!D13"
+          },
+          "normalFormula": "=IF(B13=\"Yes\",C13,IF(B13=\"No\",C13*(-1),IF(B13=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No",
+            "N/A"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "section2",
+      "title": "Section 2: Relationship with the Owner/Construction Manager/General Contractor (from prior experience or by reputation)",
+      "titleCell": "Factors!A15",
+      "questions": [
+        {
+          "id": "S2_Q1",
+          "text": "Does the GC/CM treat bid in an ethical manner during the bidding process?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A16",
+            "answer": "Factors!B16",
+            "weight": "Factors!C16",
+            "score": "Factors!D16"
+          },
+          "normalFormula": "=IF(B16=\"Yes\",C16,IF(B16=\"No\",C16*(-1),IF(B16=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 8
+          }
+        },
+        {
+          "id": "S2_Q2",
+          "text": "Does the GC/CM have a good reputation for their working relationship with electrical contractors",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A17",
+            "answer": "Factors!B17",
+            "weight": "Factors!C17",
+            "score": "Factors!D17"
+          },
+          "normalFormula": "=IF(B17=\"Yes\",C17,IF(B17=\"No\",C17*(-1),IF(B17=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B17=\"Yes\",C17,IF(B17=\"No\",C17*(-1),IF(B17=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "No",
+            "score": -2
+          }
+        },
+        {
+          "id": "S2_Q3",
+          "text": "Does the GM/CM have a reputation or history of making progress payments on time?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A18",
+            "answer": "Factors!B18",
+            "weight": "Factors!C18",
+            "score": "Factors!D18"
+          },
+          "normalFormula": "=IF(B18=\"Yes\",C18,IF(B18=\"No\",C18*(-1),IF(B18=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B18=\"Yes\",C18,IF(B18=\"No\",C18*(-1),IF(B18=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 1
+          }
+        },
+        {
+          "id": "S2_Q4",
+          "text": "Is additional work expected to be performed?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A19",
+            "answer": "Factors!B19",
+            "weight": "Factors!C19",
+            "score": "Factors!D19"
+          },
+          "normalFormula": "=IF(B19=\"Yes\",C19,IF(B19=\"No\",C19*(-1),IF(B19=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "No",
+            "score": -4
+          }
+        },
+        {
+          "id": "S2_Q5",
+          "text": "Does the GC/CM coordinate between trades effectively in the project?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A20",
+            "answer": "Factors!B20",
+            "weight": "Factors!C20",
+            "score": "Factors!D20"
+          },
+          "normalFormula": "=IF(B20=\"Yes\",C20,IF(B20=\"No\",C20*(-1),IF(B20=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 6
+          }
+        },
+        {
+          "id": "S2_Q6",
+          "text": "Does the GC/CM have a realistic expectation of the scheduled time for the completion of the project?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A21",
+            "answer": "Factors!B21",
+            "weight": "Factors!C21",
+            "score": "Factors!D21"
+          },
+          "normalFormula": "=IF(B21=\"Yes\",C21,IF(B21=\"No\",C21*(-1),IF(B21=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B21=\"Yes\",C21,IF(B21=\"No\",C21*(-1),IF(B21=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "section3",
+      "title": "Section 3: Bid Preparation Time Frame",
+      "titleCell": "Factors!A23",
+      "questions": [
+        {
+          "id": "S3_Q1",
+          "text": "Does the language of the Bid Form require the assumption of major risk (such as change order clauses, no damage for delay, and/or different site conditions)?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A24",
+            "answer": "Factors!B24",
+            "weight": "Factors!C24",
+            "score": "Factors!D24"
+          },
+          "normalFormula": "=IF(B24=\"Yes\",C24,IF(B24=\"No\",C24*(-1),IF(B24=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B24=\"Yes\",C24,IF(B24=\"No\",C24*(-1),IF(B24=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S3_Q2",
+          "text": "Is the language of the bid clear about what is included/excluded in the scope of work?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A25",
+            "answer": "Factors!B25",
+            "weight": "Factors!C25",
+            "score": "Factors!D25"
+          },
+          "normalFormula": "=IF(B25=\"Yes\",C25,IF(B25=\"No\",C25*(-1),IF(B25=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B25=\"Yes\",C25,IF(B25=\"No\",C25*(-1),IF(B25=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S3_Q3",
+          "text": "Is the time allowed for bid preparation proportional to the complexity and size of the project?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A26",
+            "answer": "Factors!B26",
+            "weight": "Factors!C26",
+            "score": "Factors!D26"
+          },
+          "normalFormula": "=IF(B26=\"Yes\",C26,IF(B26=\"No\",C26*(-1),IF(B26=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B26=\"Yes\",C26,IF(B26=\"No\",C26*(-1),IF(B26=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S3_Q4",
+          "text": "Are there enough estimating personnel available to complete bid preparation in the allocated time?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A27",
+            "answer": "Factors!B27",
+            "weight": "Factors!C27",
+            "score": "Factors!D27"
+          },
+          "normalFormula": "=IF(B27=\"Yes\",C27,IF(B27=\"No\",C27*(-1),IF(B27=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B27=\"Yes\",C27,IF(B27=\"No\",C27*(-1),IF(B27=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S3_Q5",
+          "text": "Does the bidding process create risk/opportunity (new market, new client, etc)?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A28",
+            "answer": "Factors!B28",
+            "weight": "Factors!C28",
+            "score": "Factors!D28"
+          },
+          "normalFormula": "=IF(B28=\"Yes\",C28,IF(B28=\"No\",C28*(-1),IF(B28=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B28=\"Yes\",C28,IF(B28=\"No\",C28*(-1),IF(B28=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "section4",
+      "title": "Section 4: Competition",
+      "titleCell": "Factors!A30",
+      "questions": [
+        {
+          "id": "S4_Q1",
+          "text": "Is the number of bidders on the bidders list an advantage or disadvantage? [Advantage equals a positive rating, disadvantage equals a minus rating]",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A31",
+            "answer": "Factors!B31",
+            "weight": "Factors!C31",
+            "score": "Factors!D31"
+          },
+          "normalFormula": "=IF(B31=\"Yes\",C31,IF(B31=\"No\",C31*(-1),IF(B31=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B31=\"Yes\",C31,IF(B31=\"No\",C31*(-1),IF(B31=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S4_Q2",
+          "text": "Have we been successful in prior bidding encounters with the contractors on the bidders list?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A32",
+            "answer": "Factors!B32",
+            "weight": "Factors!C32",
+            "score": "Factors!D32"
+          },
+          "normalFormula": "=IF(B32=\"Yes\",C32,IF(B32=\"No\",C32*(-1),IF(B32=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B32=\"Yes\",C32,IF(B32=\"No\",C32*(-1),IF(B32=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S4_Q3",
+          "text": "Do we feel that after assessing the competition, we have a reasonable chance of being awarded the contract?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A33",
+            "answer": "Factors!B33",
+            "weight": "Factors!C33",
+            "score": "Factors!D33"
+          },
+          "normalFormula": "=IF(B33=\"Yes\",C33,IF(B33=\"No\",C33*(-1),IF(B33=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B33=\"Yes\",C33,IF(B33=\"No\",C33*(-1),IF(B33=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "section5",
+      "title": "Section 5: Assessed Risk Factors",
+      "titleCell": "Factors!A35",
+      "questions": [
+        {
+          "id": "S5_Q1",
+          "text": "Is this a bidding opportunity (a new market, a new partnership, a new area, etc)?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A36",
+            "answer": "Factors!B36",
+            "weight": "Factors!C36",
+            "score": "Factors!D36"
+          },
+          "normalFormula": "=IF(B36=\"Yes\",C36,IF(B36=\"No\",C36*(-1),IF(B36=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B36=\"Yes\",C36,IF(B36=\"No\",C36*(-1),IF(B36=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q2",
+          "text": "Are we familiar with this type of project?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A37",
+            "answer": "Factors!B37",
+            "weight": "Factors!C37",
+            "score": "Factors!D37"
+          },
+          "normalFormula": "=IF(B37=\"Yes\",C37,IF(B37=\"No\",C37*(-1),IF(B37=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B37=\"Yes\",C37,IF(B37=\"No\",C37*(-1),IF(B37=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q3",
+          "text": "Are we comfortable with this size of project?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A38",
+            "answer": "Factors!B38",
+            "weight": "Factors!C38",
+            "score": "Factors!D38"
+          },
+          "normalFormula": "=IF(B38=\"Yes\",C38,IF(B38=\"No\",C38*(-1),IF(B38=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B38=\"Yes\",C38,IF(B38=\"No\",C38*(-1),IF(B38=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q4",
+          "text": "Has this type of work been reasonably profitable in the past?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A39",
+            "answer": "Factors!B39",
+            "weight": "Factors!C39",
+            "score": "Factors!D39"
+          },
+          "normalFormula": "=IF(B39=\"Yes\",C39,IF(B39=\"No\",C39*(-1),IF(B39=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B39=\"Yes\",C39,IF(B39=\"No\",C39*(-1),IF(B39=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q5",
+          "text": "Do we have past cost data available from similar projects?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A40",
+            "answer": "Factors!B40",
+            "weight": "Factors!C40",
+            "score": "Factors!D40"
+          },
+          "normalFormula": "=IF(B40=\"Yes\",C40,IF(B40=\"No\",C40*(-1),IF(B40=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B40=\"Yes\",C40,IF(B40=\"No\",C40*(-1),IF(B40=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q6",
+          "text": "Is this ‘our kind’ of project?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A41",
+            "answer": "Factors!B41",
+            "weight": "Factors!C41",
+            "score": "Factors!D41"
+          },
+          "normalFormula": "=IF(B41=\"Yes\",C41,IF(B41=\"No\",C41*(-1),IF(B41=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B41=\"Yes\",C41,IF(B41=\"No\",C41*(-1),IF(B41=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q7",
+          "text": "Do unique construction methods create a risk/opportunity?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A42",
+            "answer": "Factors!B42",
+            "weight": "Factors!C42",
+            "score": "Factors!D42"
+          },
+          "normalFormula": "=IF(B42=\"Yes\",C42,IF(B42=\"No\",C42*(-1),IF(B42=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B42=\"Yes\",C42,IF(B42=\"No\",C42*(-1),IF(B42=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q8",
+          "text": "Does the project require hazardous work (e.g. asbestos, contaminated soils, etc.)? Is this a risk or an opportunity?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A43",
+            "answer": "Factors!B43",
+            "weight": "Factors!C43",
+            "score": "Factors!D43"
+          },
+          "normalFormula": "=IF(B43=\"Yes\",C43,IF(B43=\"No\",C43*(-1),IF(B43=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B43=\"Yes\",C43,IF(B43=\"No\",C43*(-1),IF(B43=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q9",
+          "text": "Does the completion date allow for a realistic schedule?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A44",
+            "answer": "Factors!B44",
+            "weight": "Factors!C44",
+            "score": "Factors!D44"
+          },
+          "normalFormula": "=IF(B44=\"Yes\",C44,IF(B44=\"No\",C44*(-1),IF(B44=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B44=\"Yes\",C44,IF(B44=\"No\",C44*(-1),IF(B44=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q10",
+          "text": "If the project requires complex phasing, is this a risk or an opportunity?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A45",
+            "answer": "Factors!B45",
+            "weight": "Factors!C45",
+            "score": "Factors!D45"
+          },
+          "normalFormula": "=IF(B45=\"Yes\",C45,IF(B45=\"No\",C45*(-1),IF(B45=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B45=\"Yes\",C45,IF(B45=\"No\",C45*(-1),IF(B45=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q11",
+          "text": "Does the project expose us to unusual safety risks?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A46",
+            "answer": "Factors!B46",
+            "weight": "Factors!C46",
+            "score": "Factors!D46"
+          },
+          "normalFormula": "=IF(B46=\"Yes\",C46,IF(B46=\"No\",C46*(-1),IF(B46=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B46=\"Yes\",C46,IF(B46=\"No\",C46*(-1),IF(B46=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q12",
+          "text": "Is the project of adequate size for us to be competitive?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A47",
+            "answer": "Factors!B47",
+            "weight": "Factors!C47",
+            "score": "Factors!D47"
+          },
+          "normalFormula": "=IF(B47=\"Yes\",C47,IF(B47=\"No\",C47*(-1),IF(B47=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B47=\"Yes\",C47,IF(B47=\"No\",C47*(-1),IF(B47=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q13",
+          "text": "Has the client set a realistic budget?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A48",
+            "answer": "Factors!B48",
+            "weight": "Factors!C48",
+            "score": "Factors!D48"
+          },
+          "normalFormula": "=IF(B48=\"Yes\",C48,IF(B48=\"No\",C48*(-1),IF(B48=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B48=\"Yes\",C48,IF(B48=\"No\",C48*(-1),IF(B48=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S5_Q14",
+          "text": "Do we need the project for our field personnel and/or management?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A49",
+            "answer": "Factors!B49",
+            "weight": "Factors!C49",
+            "score": "Factors!D49"
+          },
+          "normalFormula": "=IF(B49=\"Yes\",C49,IF(B49=\"No\",C49*(-1),IF(B49=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B49=\"Yes\",C49,IF(B49=\"No\",C49*(-1),IF(B49=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "section6",
+      "title": "Section 6: Geographical Location",
+      "titleCell": "Factors!A51",
+      "questions": [
+        {
+          "id": "S6_Q1",
+          "text": "Is this an area we are familiar with, and do we have relationships with all parties involved (i.e. city/state officials, business managers, and union leaders)?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A52",
+            "answer": "Factors!B52",
+            "weight": "Factors!C52",
+            "score": "Factors!D52"
+          },
+          "normalFormula": "=IF(B52=\"Yes\",C52,IF(B52=\"No\",C52*(-1),IF(B52=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B52=\"Yes\",C52,IF(B52=\"No\",C52*(-1),IF(B52=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q2",
+          "text": "Does the location create risk or opportunity?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A53",
+            "answer": "Factors!B53",
+            "weight": "Factors!C53",
+            "score": "Factors!D53"
+          },
+          "normalFormula": "=IF(B53=\"Yes\",C53,IF(B53=\"No\",C53*(-1),IF(B53=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B53=\"Yes\",C53,IF(B53=\"No\",C53*(-1),IF(B53=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q3",
+          "text": "Does the project location create risk in terms of distance/housing availability/housing quality?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A54",
+            "answer": "Factors!B54",
+            "weight": "Factors!C54",
+            "score": "Factors!D54"
+          },
+          "normalFormula": "=IF(B54=\"Yes\",C54,IF(B54=\"No\",C54*(-1),IF(B54=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B54=\"Yes\",C54,IF(B54=\"No\",C54*(-1),IF(B54=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q4",
+          "text": "Are unusual transportation problems caused by the site location?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A55",
+            "answer": "Factors!B55",
+            "weight": "Factors!C55",
+            "score": "Factors!D55"
+          },
+          "normalFormula": "=IF(B55=\"Yes\",C55,IF(B55=\"No\",C55*(-1),IF(B55=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B55=\"Yes\",C55,IF(B55=\"No\",C55*(-1),IF(B55=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q5",
+          "text": "Does the labor market at the site create risk or opportunity?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A56",
+            "answer": "Factors!B56",
+            "weight": "Factors!C56",
+            "score": "Factors!D56"
+          },
+          "normalFormula": "=IF(B56=\"Yes\",C56,IF(B56=\"No\",C56*(-1),IF(B56=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B56=\"Yes\",C56,IF(B56=\"No\",C56*(-1),IF(B56=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q6",
+          "text": "Are there restrictive union practices (such as mobility language or prefabrication) on the number of our own personnel we can use?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A57",
+            "answer": "Factors!B57",
+            "weight": "Factors!C57",
+            "score": "Factors!D57"
+          },
+          "normalFormula": "=IF(B57=\"Yes\",C57,IF(B57=\"No\",C57*(-1),IF(B57=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B57=\"Yes\",C57,IF(B57=\"No\",C57*(-1),IF(B57=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q7",
+          "text": "Are there other large projects competing for labor in the area?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A58",
+            "answer": "Factors!B58",
+            "weight": "Factors!C58",
+            "score": "Factors!D58"
+          },
+          "normalFormula": "=IF(B58=\"Yes\",C58,IF(B58=\"No\",C58*(-1),IF(B58=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B58=\"Yes\",C58,IF(B58=\"No\",C58*(-1),IF(B58=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q8",
+          "text": "Are there any unusual or nonstandard IBEW agreements or practices in place in the project area?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A59",
+            "answer": "Factors!B59",
+            "weight": "Factors!C59",
+            "score": "Factors!D59"
+          },
+          "normalFormula": "=IF(B59=\"Yes\",C59,IF(B59=\"No\",C59*(-1),IF(B59=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B59=\"Yes\",C59,IF(B59=\"No\",C59*(-1),IF(B59=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q9",
+          "text": "Do anticipated/typical weather conditions during the project’s scheduled timeframe create risk or opportunity?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A60",
+            "answer": "Factors!B60",
+            "weight": "Factors!C60",
+            "score": "Factors!D60"
+          },
+          "normalFormula": "=IF(B60=\"Yes\",C60,IF(B60=\"No\",C60*(-1),IF(B60=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B60=\"Yes\",C60,IF(B60=\"No\",C60*(-1),IF(B60=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S6_Q10",
+          "text": "Are we currently licensed to conduct business in the project area?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A61",
+            "answer": "Factors!B61",
+            "weight": "Factors!C61",
+            "score": "Factors!D61"
+          },
+          "normalFormula": "=IF(B61=\"Yes\",C61,IF(B61=\"No\",C61*(-1),IF(B61=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B61=\"Yes\",C61,IF(B61=\"No\",C61*(-1),IF(B61=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "section7",
+      "title": "Section 7: Project Management",
+      "titleCell": "Factors!A63",
+      "questions": [
+        {
+          "id": "S7_Q1",
+          "text": "Do we have adequate project management personnel available to staff the project if we are awarded the contract?",
+          "defaultWeight": 5,
+          "cells": {
+            "text": "Factors!A64",
+            "answer": "Factors!B64",
+            "weight": "Factors!C64",
+            "score": "Factors!D64"
+          },
+          "normalFormula": "=IF(B64=\"Yes\",C64,IF(B64=\"No\",C64*(-1),IF(B64=\"N/A\", 0,\"\")))",
+          "storedFormula": null,
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 5,
+              "totalContribution": 5
+            },
+            {
+              "answer": "No",
+              "cellResult": -5,
+              "totalContribution": -5
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": "Yes",
+            "score": 26
+          }
+        },
+        {
+          "id": "S7_Q2",
+          "text": "Do we have the type of equipment necessary for the project, and is it available during the project timeframe?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A65",
+            "answer": "Factors!B65",
+            "weight": "Factors!C65",
+            "score": "Factors!D65"
+          },
+          "normalFormula": "=IF(B65=\"Yes\",C65,IF(B65=\"No\",C65*(-1),IF(B65=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B65=\"Yes\",C65,IF(B65=\"No\",C65*(-1),IF(B65=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S7_Q3",
+          "text": "Is there a Project Labor Agreement (PLA) in place for this project?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A66",
+            "answer": "Factors!B66",
+            "weight": "Factors!C66",
+            "score": "Factors!D66"
+          },
+          "normalFormula": "=IF(B66=\"Yes\",C66,IF(B66=\"No\",C66*(-1),IF(B66=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B66=\"Yes\",C66,IF(B66=\"No\",C66*(-1),IF(B66=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S7_Q4",
+          "text": "Are project management/filed supervisors available to be involved in the bidding process?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A67",
+            "answer": "Factors!B67",
+            "weight": "Factors!C67",
+            "score": "Factors!D67"
+          },
+          "normalFormula": "=IF(B67=\"Yes\",C67,IF(B67=\"No\",C67*(-1),IF(B67=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B67=\"Yes\",C67,IF(B67=\"No\",C67*(-1),IF(B67=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": false,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "section8",
+      "title": "Section 8: Contractual Obligations",
+      "titleCell": "Factors!A69",
+      "questions": [
+        {
+          "id": "S8_Q1",
+          "text": "Is the contract reasonable and fair to all concerned?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A70",
+            "answer": "Factors!B70",
+            "weight": "Factors!C70",
+            "score": "Factors!D70"
+          },
+          "normalFormula": "=IF(B70=\"Yes\",C70,IF(B70=\"No\",C70*(-1),IF(B70=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B70=\"Yes\",C70,IF(B70=\"No\",C70*(-1),IF(B70=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S8_Q2",
+          "text": "Will further contracts/amendments follow?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A71",
+            "answer": "Factors!B71",
+            "weight": "Factors!C71",
+            "score": "Factors!D71"
+          },
+          "normalFormula": "=IF(B71=\"Yes\",C71,IF(B71=\"No\",C71*(-1),IF(B71=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B71=\"Yes\",C71,IF(B71=\"No\",C71*(-1),IF(B71=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S8_Q3",
+          "text": "Is the specified length of warranty for the project reasonable?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A72",
+            "answer": "Factors!B72",
+            "weight": "Factors!C72",
+            "score": "Factors!D72"
+          },
+          "normalFormula": "=IF(B72=\"Yes\",C72,IF(B72=\"No\",C72*(-1),IF(B72=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B72=\"Yes\",C72,IF(B72=\"No\",C72*(-1),IF(B72=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S8_Q4",
+          "text": "Is the basis for payment acceptable?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A73",
+            "answer": "Factors!B73",
+            "weight": "Factors!C73",
+            "score": "Factors!D73"
+          },
+          "normalFormula": "=IF(B73=\"Yes\",C73,IF(B73=\"No\",C73*(-1),IF(B73=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B73=\"Yes\",C73,IF(B73=\"No\",C73*(-1),IF(B73=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S8_Q5",
+          "text": "Is the rate of retainage nonstandard or otherwise unusual?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A74",
+            "answer": "Factors!B74",
+            "weight": "Factors!C74",
+            "score": "Factors!D74"
+          },
+          "normalFormula": "=IF(B74=\"Yes\",C74,IF(B74=\"No\",C74*(-1),IF(B74=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B74=\"Yes\",C74,IF(B74=\"No\",C74*(-1),IF(B74=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S8_Q6",
+          "text": "Do liquidated damages/incentives create risk or opportunity?",
+          "defaultWeight": 5,
+          "cells": {
+            "text": "Factors!A75",
+            "answer": "Factors!B75",
+            "weight": "Factors!C75",
+            "score": "Factors!D75"
+          },
+          "normalFormula": "=IF(B75=\"Yes\",C75,IF(B75=\"No\",C75*(-1),IF(B75=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B75=\"Yes\",C75,IF(B75=\"No\",C75*(-1),IF(B75=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 5,
+              "totalContribution": 5
+            },
+            {
+              "answer": "No",
+              "cellResult": -5,
+              "totalContribution": -5
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S8_Q7",
+          "text": "Are there insurance/indemnification requirements that create risk?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A76",
+            "answer": "Factors!B76",
+            "weight": "Factors!C76",
+            "score": "Factors!D76"
+          },
+          "normalFormula": "=IF(B76=\"Yes\",C76,IF(B76=\"No\",C76*(-1),IF(B76=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B76=\"Yes\",C76,IF(B76=\"No\",C76*(-1),IF(B76=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "section9",
+      "title": "Section 9: Anticipated Productivity Factors",
+      "titleCell": "Factors!A78",
+      "questions": [
+        {
+          "id": "S9_Q1",
+          "text": "Is the work around an operating unit?",
+          "defaultWeight": 3,
+          "cells": {
+            "text": "Factors!A79",
+            "answer": "Factors!B79",
+            "weight": "Factors!C79",
+            "score": "Factors!D79"
+          },
+          "normalFormula": "=IF(B79=\"Yes\",C79,IF(B79=\"No\",C79*(-1),IF(B79=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B79=\"Yes\",C79,IF(B79=\"No\",C79*(-1),IF(B79=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 3,
+              "totalContribution": 3
+            },
+            {
+              "answer": "No",
+              "cellResult": -3,
+              "totalContribution": -3
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S9_Q2",
+          "text": "Is there adequate space to store, stage, and install materials on site?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A80",
+            "answer": "Factors!B80",
+            "weight": "Factors!C80",
+            "score": "Factors!D80"
+          },
+          "normalFormula": "=IF(B80=\"Yes\",C80,IF(B80=\"No\",C80*(-1),IF(B80=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B80=\"Yes\",C80,IF(B80=\"No\",C80*(-1),IF(B80=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S9_Q3",
+          "text": "Is overtime required?",
+          "defaultWeight": 2,
+          "cells": {
+            "text": "Factors!A81",
+            "answer": "Factors!B81",
+            "weight": "Factors!C81",
+            "score": "Factors!D81"
+          },
+          "normalFormula": "=IF(B81=\"Yes\",C81,IF(B81=\"No\",C81*(-1),IF(B81=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B81=\"Yes\",C81,IF(B81=\"No\",C81*(-1),IF(B81=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 2,
+              "totalContribution": 2
+            },
+            {
+              "answer": "No",
+              "cellResult": -2,
+              "totalContribution": -2
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S9_Q4",
+          "text": "Is shiftwork required?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A82",
+            "answer": "Factors!B82",
+            "weight": "Factors!C82",
+            "score": "Factors!D82"
+          },
+          "normalFormula": "=IF(B82=\"Yes\",C82,IF(B82=\"No\",C82*(-1),IF(B82=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B82=\"Yes\",C82,IF(B82=\"No\",C82*(-1),IF(B82=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S9_Q5",
+          "text": "Is the owner supplying materials (incl. bread-and-butter items such as conduit and wire)?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A83",
+            "answer": "Factors!B83",
+            "weight": "Factors!C83",
+            "score": "Factors!D83"
+          },
+          "normalFormula": "=IF(B83=\"Yes\",C83,IF(B83=\"No\",C83*(-1),IF(B83=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B83=\"Yes\",C83,IF(B83=\"No\",C83*(-1),IF(B83=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S9_Q6",
+          "text": "Is the owner supplying major equipment?",
+          "defaultWeight": 1,
+          "cells": {
+            "text": "Factors!A84",
+            "answer": "Factors!B84",
+            "weight": "Factors!C84",
+            "score": "Factors!D84"
+          },
+          "normalFormula": "=IF(B84=\"Yes\",C84,IF(B84=\"No\",C84*(-1),IF(B84=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B84=\"Yes\",C84,IF(B84=\"No\",C84*(-1),IF(B84=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 1,
+              "totalContribution": 1
+            },
+            {
+              "answer": "No",
+              "cellResult": -1,
+              "totalContribution": -1
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        },
+        {
+          "id": "S9_Q7",
+          "text": "Are there anticipated access constraints to the site or project area?",
+          "defaultWeight": 4,
+          "cells": {
+            "text": "Factors!A85",
+            "answer": "Factors!B85",
+            "weight": "Factors!C85",
+            "score": "Factors!D85"
+          },
+          "normalFormula": "=IF(B85=\"Yes\",C85,IF(B85=\"No\",C85*(-1),IF(B85=\"N/A\", 0,\"\")))",
+          "storedFormula": "=IF(B85=\"Yes\",C85,IF(B85=\"No\",C85*(-1),IF(B85=\"N/A\", 0,\"\")))",
+          "answerValidation": [
+            "Yes",
+            "No"
+          ],
+          "hiddenInSavedView": true,
+          "cases": [
+            {
+              "answer": "Yes",
+              "cellResult": 4,
+              "totalContribution": 4
+            },
+            {
+              "answer": "No",
+              "cellResult": -4,
+              "totalContribution": -4
+            },
+            {
+              "answer": "N/A",
+              "cellResult": 0,
+              "totalContribution": 0
+            },
+            {
+              "answer": null,
+              "cellResult": "",
+              "totalContribution": 0
+            }
+          ],
+          "savedExample": {
+            "answer": null,
+            "score": null
+          }
+        }
+      ]
+    }
+  ],
+  "golden": {
+    "savedExampleTotal": 43,
+    "savedExampleCachedTotal": 43,
+    "defaultTotalForSavedAnswers": 10,
+    "allYesDefaultTotal": 149,
+    "allNoDefaultTotal": -149
+  }
+}
