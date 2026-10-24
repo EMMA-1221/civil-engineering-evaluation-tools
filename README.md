@@ -1,16 +1,43 @@
-# React + Vite
+# HCG WAY — Editorial UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend for the existing HCG WAY engineering tools. This working copy implements the selected editorial direction: a quiet lake backdrop, restrained typography, translucent public pages, and solid reading surfaces for assessments and tables.
 
-Currently, two official plugins are available:
+## Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```sh
+npm ci
+npm run dev
+```
 
-## React Compiler
+The development server proxies `/api` to the existing backend on `localhost:8080`. It does not start a backend or a database. Keep real credentials out of source control.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```sh
+npm run build
+```
 
-## Expanding the ESLint configuration
+Deploy only the contents of `dist/` to the existing frontend web root after review. Preserve the existing Nginx `/api` proxy, HTTPS certificate configuration, backend, and database. The editorial UI was deployed to the existing EC2 website on 2026-10-24 UTC, after a recoverable frontend backup and archive/file checksum verification. Assets were installed before an atomic entry-page replacement; old assets were retained. No production backend or project data was changed.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Preserved behavior
+
+- Hash routes, including bid creation/editing and both productivity analysis modes.
+- Login and registration API payloads and Bearer token authentication.
+- Bid questions, default assigned values of zero, manual value changes, and counting only Yes answers.
+- Productivity factor data, weekly calculations, and save/load API contracts.
+
+## UI and flow changes
+
+- Rebuilt shared navigation, workspace, sign-in, registration, bid pages, and productivity pages.
+- Opening the root URL while signed out now shows the sign-in page; the tool workspace appears after authentication. Removed anonymous Overview navigation and the duplicate sign-in link on the sign-in page.
+- Unified account state through the existing authentication context; retained browser storage compatibility for existing tools.
+- Preserved the requested route through sign-in. Cancelled stale verification requests to avoid clearing a newer session.
+- Removed profile/settings links that had no corresponding page.
+- Added responsive layouts, field labels, visible keyboard focus, and non-blocking bid form errors.
+- Matched the two workspace tool headings in font family, size, weight, line height and spacing; matched their primary action links and removed the four corner captions.
+
+## Validation
+
+Production build, whitespace checks, and lint checks on the rewritten shell/login/navigation components pass. Static comparison confirmed the bid question file is unchanged, five productivity calculation/data definitions match the original syntax trees, and six productivity API calls retain their original contracts.
+
+The user started the separate local review launcher. Desktop and 320px login layouts, registration-mode switching, test sign-in and sign-out, bid creation, manual scoring, saving, and reloading the saved answers were verified in the browser. The test evaluation had a Yes answer with an assigned value of +1, which remained +1 after refresh and reopening. These checks used an in-memory test API outside this repository, which is not included in the production bundle. Production database persistence and the full productivity save flow have not been re-tested. The preview does not connect to production services or real project records; public Google Fonts are still loaded.
+
+After deployment, the public HTTPS entry page and its assets returned 200 with the expected SHA-256 checksums. API health reported a connected database, unauthenticated bid access returned 401, and HTTP redirected to HTTPS. Browser checks confirmed the new login page, an existing authenticated workspace, saved bid answers, and the productivity project library loaded successfully. Both tool headings had identical computed styles. These production checks were read-only; no new production record was created or edited. This validation does not establish capacity for 25 concurrent users.
