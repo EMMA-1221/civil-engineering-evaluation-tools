@@ -1,4 +1,4 @@
-.bid-page, .bid-save-modal { color:var(--hcg-ink,#243143); font-family:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:15px; line-height:1.55; }
+.bid-page, .bid-save-modal { --hcg-muted:#46566b; color:var(--hcg-ink,#243143); font-family:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:15px; line-height:1.55; }
 .bid-page { width:100%; max-width:1280px; min-width:0; margin:0 auto; padding:48px clamp(20px,4vw,56px) 40px; }
 .bid-page *, .bid-save-modal * { box-sizing:border-box; }
 .bid-page h1,.bid-page h2,.bid-page h3,.bid-page p { margin:0; }
