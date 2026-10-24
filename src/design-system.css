@@ -107,7 +107,8 @@
 .hcg-tools .hcg-site-header { padding-top:24px; padding-bottom:24px; border-bottom:1px solid var(--hcg-line); width:100%; max-width:none; background:#fcfdfe; }
 .hcg-tools .hcg-brand-name { font-size:19px; }
 .hcg-tools .hcg-brand-caption { font-size:8px; }
-.hcg-tools .hcg-site-footer { border-top:1px solid var(--hcg-line); }
+.hcg-tools .hcg-site-nav { font-size:14px; }
+.hcg-tools .hcg-site-footer { border-top:1px solid var(--hcg-line); font-size:12px; }
 .hcg-tools .btn { font-family:inherit; font-size:12px; font-weight:500; border-radius:9px; padding:9px 15px; line-height:1.5; }
 .hcg-tools .btn-primary { --bs-btn-bg:#2d5fbd; --bs-btn-border-color:#2d5fbd; --bs-btn-hover-bg:#254f9b; --bs-btn-hover-border-color:#254f9b; --bs-btn-active-bg:#20488f; --bs-btn-active-border-color:#20488f; --bs-btn-disabled-bg:#2d5fbd; --bs-btn-disabled-border-color:#2d5fbd; }
 .hcg-tools .btn-outline-primary { --bs-btn-color:#2d5fbd; --bs-btn-border-color:#becde3; --bs-btn-hover-bg:#edf2fa; --bs-btn-hover-color:#244d98; --bs-btn-hover-border-color:#94acd0; --bs-btn-active-bg:#2d5fbd; --bs-btn-active-border-color:#2d5fbd; }
