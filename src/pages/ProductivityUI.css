@@ -53,6 +53,8 @@
   border: 1px solid var(--hcg-line, #dbe1e8); border-radius: 5px; background: var(--hcg-paper, #fff);
 }
 .hcg-app .factor-table { width: 100%; min-width: 680px; border-collapse: collapse; }
+.hcg-app .hcg-prod-factors .factor-table tr > th:not(:last-child),
+.hcg-app .hcg-prod-factors .factor-table tr > td:not(:last-child) { border-right: 1px solid #e0e6ed; }
 .hcg-app .factor-header { padding: 17px 22px; border-bottom: 1px solid var(--hcg-line, #dbe1e8); background: #e8eef5; color: #48576b; text-align: center; font-size: 12px; font-weight: 600; }
 .hcg-app .factor-header:first-child { width: 61%; text-align: left; }
 .hcg-app .factor-categoryCell { padding: 22px 22px 10px; border-top: 1px solid var(--hcg-line, #dbe1e8); background: #f6f8fb; font-size: 14px; }
