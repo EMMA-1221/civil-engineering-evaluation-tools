@@ -36,6 +36,8 @@ Build locally rather than on the small production instance. The optional gzip st
 - Removed profile/settings links that had no corresponding page.
 - Added responsive layouts, field labels, visible keyboard focus, and non-blocking bid form errors.
 - Matched the two workspace tool headings in font family, size, weight, line height and spacing; matched their primary action links and removed the four corner captions.
+- Enlarged bid list and assessment text for reading: 16px body and question text, 14px table headings/dates, 15px row action buttons, and 20px list section headings. Increased table line height and row spacing; kept the existing DM Sans family and large page title. Tool navigation is 14px and the shared tool footer is 12px.
+- Gave the administrator table explicit column widths and switched the list to labeled cards at 1100px. Date labels have more room and stack on phones; assessment questions keep their separate 850px layout breakpoint.
 
 ## Validation
 
@@ -44,6 +46,8 @@ Production build, whitespace checks, and lint checks on the rewritten shell/logi
 The user started the separate local review launcher. Desktop and 320px login layouts, registration-mode switching, test sign-in and sign-out, bid creation, manual scoring, saving, and reloading the saved answers were verified in the browser. The test evaluation had a Yes answer with an assigned value of +1, which remained +1 after refresh and reopening. These checks used an in-memory test API outside this repository, which is not included in the production bundle. Production database persistence and the full productivity save flow have not been re-tested. The preview does not connect to production services or real project records; public Google Fonts are still loaded.
 
 After deployment, the public HTTPS entry page and its assets returned 200 with the expected SHA-256 checksums. API health reported a connected database, unauthenticated bid access returned 401, and HTTP redirected to HTTPS. Browser checks confirmed the new login page, an existing authenticated workspace, saved bid answers, and the productivity project library loaded successfully. Both tool headings had identical computed styles. These production checks were read-only; no new production record was created or edited. This validation does not establish capacity for 25 concurrent users.
+
+The bid readability update was deployed after a fresh recoverable frontend backup. Browser checks confirmed the 16px list body, 14px dates, and 15px View/edit action; the administrator list worked at desktop, 1100px, and 390px widths. All 16 assessment rows fit at desktop and 320px, with no horizontal overflow. Existing saved answers were opened read-only. All 16 non-gzip release files matched their decoded HTTPS checksums; compression, caching, unauthenticated access protection, and database health checks still passed. No backend, database, or Nginx setting was changed for this typography update.
 
 ## Loading performance
 
