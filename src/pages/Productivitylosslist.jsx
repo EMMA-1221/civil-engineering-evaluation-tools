@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../Productivitycontext';
-import './ProductivityLossList.css';  // ← 改用外部 CSS
+import './ProductivitylossList.css';
+import './ProductivityUI.css';
 
 const ProductivityLossList = () => {
   const [productivityLosses, setProductivityLosses] = useState([]);
@@ -152,7 +153,7 @@ const ProductivityLossList = () => {
       }
 
       const data = await response.json();
-      alert(`✅ Project updated successfully!\n\nOld weeks: ${data.old_weeks}\nNew weeks: ${data.new_weeks}`);
+      alert(`Project updated successfully!\n\nOld weeks: ${data.old_weeks}\nNew weeks: ${data.new_weeks}`);
       setShowEditModal(false);
       setEditingProject(null);
       fetchProductivityLosses();
@@ -178,16 +179,20 @@ const ProductivityLossList = () => {
 
   if (loading) {
     return (
-      <div className="productivity-loss-container">
+      <div className="hcg-tools hcg-prod productivity-loss-container">
         <div className="loading">Loading productivity losses...</div>
       </div>
     );
   }
 
   return (
-    <div className="productivity-loss-container">
+    <div className="hcg-tools hcg-prod productivity-loss-container">
       <div className="productivity-loss-header">
-        <h1> My Productivity Loss Projects</h1>
+        <div>
+          <p className="prod-eyebrow">Productivity · Project library</p>
+          <h1>Your productivity projects.</h1>
+          <p className="projects-intro">Revisit your analyses, compare results and keep the work moving.</p>
+        </div>
         <div className="header-buttons">
           <button className="btn btn-primary" onClick={() => setShowNewModal(true)}>
             + New Project
@@ -201,7 +206,7 @@ const ProductivityLossList = () => {
       <div className="productivity-loss-content">
         <div className="user-info">
           <div>
-            <strong>Welcome!</strong> {user?.username || ''}
+            <span className="project-owner-label">Workspace</span> {user?.username || ''}
           </div>
           <div>
             <span className={`role-badge ${user?.role === 'admin' ? 'admin' : ''}`}>
@@ -212,8 +217,8 @@ const ProductivityLossList = () => {
 
         {productivityLosses.length === 0 ? (
           <div className="no-projects">
-            <h2>No Productivity Loss Projects Yet</h2>
-            <p>Create your first productivity loss calculation project to get started!</p>
+            <h2>A place for your next analysis.</h2>
+            <p>Create a project to bring your weekly hours and impact factors together.</p>
             <button className="btn btn-primary" onClick={() => setShowNewModal(true)}>
               + Create Project
             </button>
@@ -278,7 +283,7 @@ const ProductivityLossList = () => {
       {/* New Productivity Loss Modal */}
       {showNewModal && (
         <div className="modal-overlay active" onClick={() => setShowNewModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" role="dialog" aria-modal="true" aria-label="Productivity project" onClick={(e) => e.stopPropagation()}>
             <h2>Create New Productivity Loss Project</h2>
             <form onSubmit={handleCreate}>
               <div className="form-group">
@@ -323,7 +328,7 @@ const ProductivityLossList = () => {
       {/* Edit Project Weeks Modal */}
       {showEditModal && editingProject && (
         <div className="modal-overlay active" onClick={() => setShowEditModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content" role="dialog" aria-modal="true" aria-label="Productivity project" onClick={(e) => e.stopPropagation()}>
             <h2>Edit Project: {editingProject.project_name}</h2>
             <div className="form-group">
               <label htmlFor="editWeeks">Total Weeks</label>
@@ -335,7 +340,7 @@ const ProductivityLossList = () => {
                 min="1"
                 max="52"
               />
-              <p style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
+              <p className="project-field-note">
                 Current: {editingProject.total_weeks} weeks
               </p>
             </div>

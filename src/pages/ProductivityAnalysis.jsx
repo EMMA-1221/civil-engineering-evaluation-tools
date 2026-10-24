@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProductivity } from "../Productivitycontext";
+import "./ProductivityUI.css";
 
 function ProductivityAnalysis() {
   const [activeTab, setActiveTab] = useState("proactive"); // "proactive" or "retroactive"
@@ -243,75 +244,72 @@ function ProductivityAnalysis() {
           return sum + (hr * (f / (1 + f)));
         }, 0).toFixed(2);
         
-        alert(`✅ Success! Data saved to database.\n\nProactive Loss: ${proactiveLoss} hrs\nRetroactive Loss: ${retroactiveLoss} hrs`);
+        alert(`Success! Data saved to database.\n\nProactive Loss: ${proactiveLoss} hrs\nRetroactive Loss: ${retroactiveLoss} hrs`);
       } else {
         throw new Error('Some weeks failed to save');
       }
 
     } catch (error) {
       console.error('Error saving to database:', error);
-      alert('❌ Failed to save data to database. Please try again.');
+      alert('Failed to save data to database. Please try again.');
     }
   };
 
   // Proactive 和 Retroactive 共享所有数据
 
   return (
-    <div style={styles.container}>
+    <div className="hcg-tools hcg-prod hcg-prod-analysis">
+      <p className="prod-eyebrow">Productivity · Project analysis</p>
       {/* Tab Navigation */}
-      <div style={styles.tabContainer}>
+      <div className="pa-tabContainer">
         <button
           onClick={() => setActiveTab("proactive")}
-          style={{
-            ...styles.tab,
-            ...(activeTab === "proactive" ? styles.activeTab : styles.inactiveTab),
-          }}
+          className={`pa-tab ${activeTab === "proactive" ? "is-active" : ""}`}
+          aria-pressed={activeTab === "proactive"}
         >
           Proactive
         </button>
         <button
           onClick={() => setActiveTab("retroactive")}
-          style={{
-            ...styles.tab,
-            ...(activeTab === "retroactive" ? styles.activeTab : styles.inactiveTab),
-          }}
+          className={`pa-tab ${activeTab === "retroactive" ? "is-active" : ""}`}
+          aria-pressed={activeTab === "retroactive"}
         >
           Retroactive
         </button>
       </div>
 
       {/* Page Title */}
-      <h2 style={styles.title}>
+      <h1 className="pa-title">
         {activeTab === "proactive" 
           ? "Proactive Calculation of Productivity Loss" 
           : "Retroactive Calculation of Productivity Loss"}
-      </h2>
+      </h1>
 
       {/* Toolbar */}
-      <div style={styles.toolbar}>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <button onClick={handleReset} style={styles.resetBtn}>Reset</button>
-          <button onClick={() => navigate("/productivity-losses")} style={styles.projectBtn}>
-            📁 My Projects
+      <div className="pa-toolbar">
+        <div className="pa-toolbar-actions">
+          <button onClick={handleReset} className="pa-resetBtn">Reset</button>
+          <button onClick={() => navigate("/productivity-losses")} className="pa-projectBtn">
+            My projects
           </button>
         </div>
         <button 
           onClick={handleSaveToDatabase} 
-          style={styles.calculateBtn}
+          className="pa-calculateBtn"
         >
-          Calculate and Save to Database
+          Calculate & save
         </button>
-        <div style={styles.totalBox}>Total Loss: <strong>{displayTotalLoss}</strong> hrs</div>
+        <div className="pa-totalBox">Total Loss: <strong>{displayTotalLoss}</strong> hrs</div>
       </div>
 
       {/* Table Wrapper */}
-      <div style={styles.tableWrapper}>
-        <table style={styles.table}>
+      <div className="pa-tableWrapper">
+        <table className="pa-table" aria-label="Weekly productivity analysis">
           <thead>
             <tr>
-              <th style={styles.stickyHeader}>Factors</th>
+              <th scope="col" className="pa-stickyHeader">Factors</th>
               {weeks.map((w, i) => (
-                <th key={i} style={styles.weekHeader}>{w}</th>
+                <th key={i} scope="col" className="pa-weekHeader">{w}</th>
               ))}
             </tr>
           </thead>
@@ -319,9 +317,9 @@ function ProductivityAnalysis() {
           <tbody>
             {/* Planned Work Hours */}
             <tr>
-              <td style={styles.stickyCell}><strong>Planned Work Hours</strong></td>
+              <td className="pa-stickyCell"><strong>Planned Work Hours</strong></td>
               {planned.map((val, i) => (
-                <td key={i} style={styles.dataCell}>
+                <td key={i} className="pa-dataCell">
                   <input
                     type="number"
                     value={val === 0 ? '' : val}
@@ -338,7 +336,8 @@ function ProductivityAnalysis() {
                       setPlanned(newArr);
                     }}
                     placeholder="0.00"
-                    style={styles.input}
+                    aria-label={`Planned work hours, week ${i + 1}`}
+                    className="pa-input"
                   />
                 </td>
               ))}
@@ -346,9 +345,9 @@ function ProductivityAnalysis() {
 
             {/* Change Order Hours */}
             <tr>
-              <td style={styles.stickyCell}><strong>Change Order Hours</strong></td>
+              <td className="pa-stickyCell"><strong>Change Order Hours</strong></td>
               {change.map((val, i) => (
-                <td key={i} style={styles.dataCell}>
+                <td key={i} className="pa-dataCell">
                   <input
                     type="number"
                     value={val === 0 ? '' : val}
@@ -365,42 +364,43 @@ function ProductivityAnalysis() {
                       setChange(newArr);
                     }}
                     placeholder="0.00"
-                    style={styles.input}
+                    aria-label={`Change order hours, week ${i + 1}`}
+                    className="pa-input"
                   />
                 </td>
               ))}
             </tr>
 
             {/* Revised Hours */}
-            <tr style={styles.revisedRow}>
-              <td style={styles.stickyCellRevised}><strong>Revised Hours</strong></td>
+            <tr className="pa-revisedRow">
+              <td className="pa-stickyCellRevised"><strong>Revised Hours</strong></td>
               {localRevised.map((r, i) => (
-                <td key={i} style={styles.revisedCell}>
+                <td key={i} className="pa-revisedCell">
                   {Number(r).toFixed(2)}
                 </td>
               ))}
             </tr>
 
             {/* Productivity Factors Header */}
-            <tr style={styles.factorHeaderRow}>
-              <td style={styles.stickyCell} colSpan={15}>
+            <tr className="pa-factorHeaderRow">
+              <td className="pa-stickyCell" colSpan={weeks.length + 1}>
                 <strong>Productivity Factors</strong>
               </td>
             </tr>
 
             {/* Factors sub-header */}
-            <tr style={styles.factorSubHeaderRow}>
-              <td style={styles.stickyCell}><strong>Factors</strong></td>
+            <tr className="pa-factorSubHeaderRow">
+              <td className="pa-stickyCell"><strong>Factors</strong></td>
               {weeks.map((_, i) => (
-                <td key={i} style={styles.impactHeader}><strong>Impact</strong></td>
+                <td key={i} className="pa-impactHeader"><strong>Impact</strong></td>
               ))}
             </tr>
 
             {/* Overmanning */}
             <tr>
-              <td style={styles.stickyCell}>Overmanning</td>
+              <td className="pa-stickyCell">Overmanning</td>
               {factors.overmanning.map((val, i) => (
-                <td key={i} style={styles.dataCell}>
+                <td key={i} className="pa-dataCell">
                   <input
                     type="number"
                     step="0.01"
@@ -419,7 +419,8 @@ function ProductivityAnalysis() {
                       setFactors(newFactors);
                     }}
                     placeholder="0.00"
-                    style={styles.input}
+                    aria-label={`Overmanning impact, week ${i + 1}`}
+                    className="pa-input"
                   />
                 </td>
               ))}
@@ -427,9 +428,9 @@ function ProductivityAnalysis() {
 
             {/* Stacking of Trades */}
             <tr>
-              <td style={styles.stickyCell}>Stacking of Trades</td>
+              <td className="pa-stickyCell">Stacking of Trades</td>
               {factors.stacking.map((val, i) => (
-                <td key={i} style={styles.dataCell}>
+                <td key={i} className="pa-dataCell">
                   <input
                     type="number"
                     step="0.01"
@@ -448,7 +449,8 @@ function ProductivityAnalysis() {
                       setFactors(newFactors);
                     }}
                     placeholder="0.00"
-                    style={styles.input}
+                    aria-label={`Stacking of trades impact, week ${i + 1}`}
+                    className="pa-input"
                   />
                 </td>
               ))}
@@ -456,9 +458,9 @@ function ProductivityAnalysis() {
 
             {/* Overtime 5-10 */}
             <tr>
-              <td style={styles.stickyCell}>Overtime 5-10</td>
+              <td className="pa-stickyCell">Overtime 5-10</td>
               {factors.overtime.map((val, i) => (
-                <td key={i} style={styles.dataCell}>
+                <td key={i} className="pa-dataCell">
                   <input
                     type="number"
                     step="0.01"
@@ -477,255 +479,38 @@ function ProductivityAnalysis() {
                       setFactors(newFactors);
                     }}
                     placeholder="0.00"
-                    style={styles.input}
+                    aria-label={`Overtime impact, week ${i + 1}`}
+                    className="pa-input"
                   />
                 </td>
               ))}
             </tr>
 
             {/* Total Factors */}
-            <tr style={styles.totalFactorsRow}>
-              <td style={styles.stickyCellTotal}><strong>Total Factors</strong></td>
+            <tr className="pa-totalFactorsRow">
+              <td className="pa-stickyCellTotal"><strong>Total Factors</strong></td>
               {localTotalFactors.map((val, i) => (
-                <td key={i} style={styles.totalFactorsCell}>
+                <td key={i} className="pa-totalFactorsCell">
                   {Number(val).toFixed(2)}
                 </td>
               ))}
             </tr>
 
             {/* Estimated Loss of Productivity */}
-            <tr style={styles.estimatedLossRow}>
-              <td style={styles.stickyCellLoss}>
+            <tr className="pa-estimatedLossRow">
+              <td className="pa-stickyCellLoss">
                 <strong>Estimated Loss of Productivity</strong>
               </td>
               {weeklyLoss.map((val, i) => (
-                <td key={i} style={styles.estimatedLossCell}>{val}</td>
+                <td key={i} className="pa-estimatedLossCell">{val}</td>
               ))}
             </tr>
           </tbody>
         </table>
       </div>
+      <p className="prod-table-note">Both methods share your project inputs. Scroll across the table to review each week.</p>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    padding: "2rem",
-    fontFamily: "Segoe UI, sans-serif",
-    backgroundColor: "#f8fafc",
-    minHeight: "100vh",
-  },
-  tabContainer: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: "2rem",
-    gap: "0",
-  },
-  tab: {
-    padding: "0.75rem 3rem",
-    fontSize: "1.1rem",
-    fontWeight: "600",
-    border: "none",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  activeTab: {
-    backgroundColor: "#27ae60",
-    color: "white",
-    borderBottom: "3px solid #1e8449",
-  },
-  inactiveTab: {
-    backgroundColor: "#7f8c8d",
-    color: "white",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "1.5rem",
-    color: "#002b5c",
-    fontSize: "1.8rem",
-  },
-  toolbar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "1rem",
-    padding: "0 1rem",
-  },
-  resetBtn: {
-    background: "#c0392b",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    padding: "0.6rem 1.2rem",
-    cursor: "pointer",
-    fontSize: "1rem",
-    fontWeight: "500",
-  },
-  projectBtn: {
-    background: "#3498db",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    padding: "0.6rem 1.2rem",
-    cursor: "pointer",
-    fontSize: "1rem",
-    fontWeight: "500",
-  },
-  totalBox: {
-    background: "#2c3e50",
-    color: "white",
-    borderRadius: "6px",
-    padding: "0.6rem 1.2rem",
-    fontSize: "1rem",
-  },
-  tableWrapper: {
-    overflowX: "auto",
-    boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
-    borderRadius: "8px",
-    backgroundColor: "white",
-  },
-  table: {
-    borderCollapse: "collapse",
-    width: "100%",
-    minWidth: "1200px",
-    background: "white",
-  },
-  stickyHeader: {
-    position: "sticky",
-    left: 0,
-    backgroundColor: "#2d5a3d",
-    color: "white",
-    padding: "0.8rem",
-    textAlign: "center",
-    fontWeight: "600",
-    border: "1px solid #1e3a28",
-    zIndex: 10,
-    minWidth: "180px",
-  },
-  weekHeader: {
-    backgroundColor: "#2d5a3d",
-    color: "white",
-    padding: "0.8rem",
-    textAlign: "center",
-    fontWeight: "600",
-    border: "1px solid #1e3a28",
-    minWidth: "100px",
-  },
-  stickyCell: {
-    position: "sticky",
-    left: 0,
-    backgroundColor: "white",
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    border: "1px solid #ccc",
-    fontWeight: "500",
-    zIndex: 5,
-    minWidth: "180px",
-  },
-  stickyCellRevised: {
-    position: "sticky",
-    left: 0,
-    backgroundColor: "#fff3cd",
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    border: "1px solid #ccc",
-    fontWeight: "600",
-    zIndex: 5,
-    minWidth: "180px",
-  },
-  stickyCellTotal: {
-    position: "sticky",
-    left: 0,
-    backgroundColor: "#2c3e50",
-    color: "#f39c12",
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    border: "1px solid #1a252f",
-    fontWeight: "700",
-    zIndex: 5,
-    minWidth: "180px",
-  },
-  stickyCellLoss: {
-    position: "sticky",
-    left: 0,
-    backgroundColor: "#2c3e50",
-    color: "#f39c12",
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    border: "1px solid #1a252f",
-    fontWeight: "700",
-    zIndex: 5,
-    minWidth: "180px",
-  },
-  dataCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.4rem",
-    minWidth: "100px",
-  },
-  revisedCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.6rem",
-    backgroundColor: "#fff3cd",
-    fontWeight: "500",
-  },
-  revisedRow: {
-    backgroundColor: "#fff3cd",
-  },
-  factorHeaderRow: {
-    backgroundColor: "#e8e8e8",
-  },
-  factorSubHeaderRow: {
-    backgroundColor: "#d4edda",
-  },
-  impactHeader: {
-    backgroundColor: "#d4edda",
-    textAlign: "center",
-    padding: "0.6rem",
-    border: "1px solid #ccc",
-    fontWeight: "600",
-  },
-  totalFactorsRow: {
-    backgroundColor: "#2c3e50",
-  },
-  totalFactorsCell: {
-    border: "1px solid #1a252f",
-    textAlign: "center",
-    padding: "0.6rem",
-    backgroundColor: "#2c3e50",
-    color: "#f39c12",
-    fontWeight: "700",
-  },
-  estimatedLossRow: {
-    backgroundColor: "#2c3e50",
-  },
-  estimatedLossCell: {
-    border: "1px solid #1a252f",
-    textAlign: "center",
-    padding: "0.6rem",
-    backgroundColor: "#2c3e50",
-    color: "#f39c12",
-    fontWeight: "700",
-  },
-  input: {
-    width: "90%",
-    padding: "0.4rem",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
-    textAlign: "center",
-  },
-  calculateBtn: {
-    background: "#0d47a1",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    padding: "0.6rem 1.2rem",
-    cursor: "pointer",
-    fontSize: "1rem",
-    fontWeight: "500",
-  },
-};
 
 export default ProductivityAnalysis;

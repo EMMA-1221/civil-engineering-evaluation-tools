@@ -1,4 +1,5 @@
 import React from "react";
+import "./ProductivityUI.css";
 
 function Factors() {
   const factorsData = [
@@ -153,26 +154,26 @@ function Factors() {
       // Category with subcategory and multiple items
       return (
         <React.Fragment key={index}>
-          <tr style={styles.categoryRow}>
-            <td colSpan="4" style={styles.categoryCell}><strong>{factor.category}</strong></td>
+          <tr className="factor-categoryRow">
+            <td colSpan="4" className="factor-categoryCell"><strong>{factor.category}</strong></td>
           </tr>
           {factor.subcategory && (
             <tr>
-              <td colSpan="4" style={styles.descriptionCell}>{factor.subcategory}</td>
+              <td colSpan="4" className="factor-descriptionCell">{factor.subcategory}</td>
             </tr>
           )}
           {factor.items.map((item, idx) => (
             <React.Fragment key={`${index}-${idx}`}>
               <tr>
-                <td style={styles.factorCell}>{item.description}</td>
-                <td style={styles.minorCell}>{item.minor}</td>
-                <td style={styles.moderateCell}>{item.moderate}</td>
-                <td style={styles.severeCell}>{item.severe}</td>
+                <td className="factor-factorCell">{item.description}</td>
+                <td className="factor-minorCell">{item.minor}</td>
+                <td className="factor-moderateCell">{item.moderate}</td>
+                <td className="factor-severeCell">{item.severe}</td>
               </tr>
               {item.note && (
                 <tr>
-                  <td style={styles.factorCell}></td>
-                  <td colSpan="3" style={styles.noteCell}>{item.note}</td>
+                  <td className="factor-factorCell"></td>
+                  <td colSpan="3" className="factor-noteCell">{item.note}</td>
                 </tr>
               )}
             </React.Fragment>
@@ -184,21 +185,21 @@ function Factors() {
       const hasNotes = factor.minorNote || factor.moderateNote || factor.severeNote;
       return (
         <React.Fragment key={index}>
-          <tr style={styles.categoryRow}>
-            <td colSpan="4" style={styles.categoryCell}><strong>{factor.category}</strong></td>
+          <tr className="factor-categoryRow">
+            <td colSpan="4" className="factor-categoryCell"><strong>{factor.category}</strong></td>
           </tr>
           <tr>
-            <td style={styles.factorCell}>{factor.description}</td>
-            <td style={styles.minorCell}>{factor.minor}</td>
-            <td style={styles.moderateCell}>{factor.moderate}</td>
-            <td style={styles.severeCell}>{factor.severe}</td>
+            <td className="factor-factorCell">{factor.description}</td>
+            <td className="factor-minorCell">{factor.minor}</td>
+            <td className="factor-moderateCell">{factor.moderate}</td>
+            <td className="factor-severeCell">{factor.severe}</td>
           </tr>
           {hasNotes && (
             <tr>
-              <td style={styles.factorCell}></td>
-              <td style={styles.noteCell}>{factor.minorNote || ""}</td>
-              <td style={styles.noteCell}>{factor.moderateNote || ""}</td>
-              <td style={styles.noteCell}>{factor.severeNote || ""}</td>
+              <td className="factor-factorCell"></td>
+              <td className="factor-noteCell">{factor.minorNote || ""}</td>
+              <td className="factor-noteCell">{factor.moderateNote || ""}</td>
+              <td className="factor-noteCell">{factor.severeNote || ""}</td>
             </tr>
           )}
         </React.Fragment>
@@ -207,20 +208,21 @@ function Factors() {
   };
 
   return (
-    <div style={styles.page}>
-      <h1 style={styles.title}>Labor Productivity Factors</h1>
-      <p style={styles.desc}>
+    <div className="hcg-tools hcg-prod hcg-prod-factors">
+      <p className="prod-eyebrow">Productivity · Reference library</p>
+      <h1 className="factor-title">Labor Productivity Factors</h1>
+      <p className="factor-desc">
         Review quantified factors affecting labor productivity for electrical contractors.
       </p>
 
-      <div style={styles.tableWrapper}>
-        <table style={styles.table}>
+      <div className="factor-tableWrapper">
+        <table className="factor-table" aria-label="Labor productivity impact factors by severity">
           <thead>
             <tr>
-              <th style={styles.header}>Productivity Factor</th>
-              <th style={styles.header}>Minor</th>
-              <th style={styles.header}>Moderate</th>
-              <th style={styles.header}>Severe</th>
+              <th scope="col" className="factor-header">Productivity Factor</th>
+              <th scope="col" className="factor-header">Minor</th>
+              <th scope="col" className="factor-header">Moderate</th>
+              <th scope="col" className="factor-header">Severe</th>
             </tr>
           </thead>
           <tbody>
@@ -228,107 +230,10 @@ function Factors() {
           </tbody>
         </table>
       </div>
+      <p className="prod-table-note">Impact levels are shown as percentages. On smaller screens, scroll the table to compare all three levels.</p>
     </div>
   );
 }
 
-const styles = {
-  page: {
-    backgroundColor: "#f8fafc",
-    minHeight: "100vh",
-    padding: "2rem",
-    fontFamily: "Segoe UI, Arial, sans-serif",
-    color: "#333",
-  },
-  title: {
-    textAlign: "center",
-    color: "#002b5c",
-    fontSize: "1.8rem",
-    fontWeight: "600",
-    marginBottom: "0.5rem",
-  },
-  desc: {
-    textAlign: "center",
-    color: "#555",
-    marginBottom: "2rem",
-  },
-  tableWrapper: {
-    overflowX: "auto",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-  table: {
-    borderCollapse: "collapse",
-    width: "100%",
-    backgroundColor: "white",
-    boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
-  },
-  header: {
-    backgroundColor: "#003d6b",
-    color: "white",
-    padding: "0.8rem",
-    textAlign: "center",
-    fontWeight: "600",
-    fontSize: "0.95rem",
-    border: "1px solid #002d4f",
-  },
-  categoryRow: {
-    backgroundColor: "#e8e8e8",
-  },
-  categoryCell: {
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    fontWeight: "700",
-    fontSize: "0.95rem",
-    border: "1px solid #ccc",
-  },
-  descriptionCell: {
-    padding: "0.6rem 1rem",
-    textAlign: "left",
-    fontSize: "0.9rem",
-    border: "1px solid #ccc",
-    fontStyle: "italic",
-  },
-  factorCell: {
-    border: "1px solid #ccc",
-    textAlign: "left",
-    padding: "0.6rem 1rem",
-    fontSize: "0.9rem",
-    backgroundColor: "white",
-  },
-  noteCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.4rem",
-    fontSize: "0.85rem",
-    fontStyle: "italic",
-    color: "#555",
-    backgroundColor: "white",
-  },
-  minorCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.6rem",
-    fontWeight: "500",
-    fontSize: "0.9rem",
-    backgroundColor: "#d4edda", // 淡绿色
-  },
-  moderateCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.6rem",
-    fontWeight: "500",
-    fontSize: "0.9rem",
-    backgroundColor: "#fff3cd", // 淡黄色
-  },
-  severeCell: {
-    border: "1px solid #ccc",
-    textAlign: "center",
-    padding: "0.6rem",
-    fontWeight: "500",
-    fontSize: "0.9rem",
-    backgroundColor: "#f8d7da", // 淡红色
-  },
-};
 
 export default Factors;

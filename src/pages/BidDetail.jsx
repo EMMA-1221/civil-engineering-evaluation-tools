@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { bidQuestions } from "../bidQuestions";
-import { Button, Modal, Form, Spinner, Alert } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
+import "./BidUI.css";
 
 function BidDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  
   const [bidName, setBidName] = useState("");
   const [bidLocation, setBidLocation] = useState("");
   const [answers, setAnswers] = useState({});
@@ -16,554 +16,146 @@ function BidDetail() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [saveError, setSaveError] = useState("");
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const isEditing = id && id !== "new";
+  const sections = Object.entries(bidQuestions);
+  const activeSections = sections.filter(([, section]) => section.questions.length > 0);
+  const emptySections = sections.filter(([, section]) => section.questions.length === 0);
+  const questionCount = sections.reduce((count, [, section]) => count + section.questions.length, 0);
+  const answeredCount = sections.reduce((count, [, section]) => count + section.questions.filter(question => answers[question.id]?.answer).length, 0);
 
-  // Initialize answer state
   const initAnswers = () => {
     const newAnswers = {};
-    Object.values(bidQuestions).forEach(section => {
-      section.questions.forEach(q => {
-        newAnswers[q.id] = { 
-          answer: null,    // 'Yes', 'No', 'N/A', null
-          value: 0         // Numeric value
-        };
-      });
-    });
+    Object.values(bidQuestions).forEach(section => section.questions.forEach(q => {
+      newAnswers[q.id] = { answer: null, value: 0 };
+    }));
     return newAnswers;
   };
 
-  // Load bid data if editing existing bid
   useEffect(() => {
-    if (id && id !== 'new') {
-      loadBid();
-    } else {
-      setAnswers(initAnswers());
-    }
+    if (id && id !== "new") loadBid();
+    else setAnswers(initAnswers());
   }, [id]);
 
   const loadBid = async () => {
-  try {
-    setLoading(true);
-    const response = await fetch(`${API_BASE_URL}/bids/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to load bid");
-    }
-
-    const data = await response.json();
-    setBidName(data.bid_name);
-    setBidLocation(data.bid_location || "");
-    
-    // Check if answers is already an object or a string
-    let parsedAnswers;
-    if (typeof data.answers === 'string') {
-      parsedAnswers = JSON.parse(data.answers);
-    } else {
-      parsedAnswers = data.answers;  // Already an object
-    }
-    
-    // Initialize all questions first
-    const initializedAnswers = initAnswers();
-    const mergedAnswers = { ...initializedAnswers };
-    
-    // Override with saved answers
-    Object.keys(parsedAnswers).forEach(key => {
-      if (parsedAnswers[key]) {
-        mergedAnswers[key] = {
+    try {
+      setLoading(true);
+      setError("");
+      const response = await fetch(`${API_BASE_URL}/bids/${id}`, { headers: { "Authorization": `Bearer ${token}` } });
+      if (!response.ok) throw new Error("Failed to load bid");
+      const data = await response.json();
+      setBidName(data.bid_name);
+      setBidLocation(data.bid_location || "");
+      const parsedAnswers = typeof data.answers === "string" ? JSON.parse(data.answers) : data.answers;
+      const mergedAnswers = { ...initAnswers() };
+      Object.keys(parsedAnswers).forEach(key => {
+        if (parsedAnswers[key]) mergedAnswers[key] = {
           answer: parsedAnswers[key].answer || null,
           value: parsedAnswers[key].value !== undefined ? parsedAnswers[key].value : 0
         };
-      }
-    });
-    
-    setAnswers(mergedAnswers);
-    setTotalScore(data.total_score);
-    setLoading(false);
-    
-  } catch (err) {
-    console.error("Load bid error:", err);
-    setError(err.message);
-    setAnswers(initAnswers());
-    setLoading(false);
-  }
-};
+      });
+      setAnswers(mergedAnswers);
+      setTotalScore(data.total_score);
+    } catch (err) {
+      console.error("Load bid error:", err);
+      setError(err.message);
+      setAnswers(initAnswers());
+    } finally { setLoading(false); }
+  };
 
-  // Calculate total score
-  // Only count if answer is "Yes"
+  // Preserve the original calculation: only Yes answers contribute their assigned value.
   useEffect(() => {
     let score = 0;
-    Object.values(bidQuestions).forEach(section => {
-      section.questions.forEach(q => {
-        const userAnswer = answers[q.id];
-        if (!userAnswer) return;
-        
-        // Only count if user selected "Yes"
-        if (userAnswer.answer === 'Yes') {
-          score += userAnswer.value;
-        }
-      });
-    });
+    Object.values(bidQuestions).forEach(section => section.questions.forEach(q => {
+      const userAnswer = answers[q.id];
+      if (userAnswer?.answer === "Yes") score += userAnswer.value;
+    }));
     setTotalScore(score);
   }, [answers]);
 
-  // Handle Yes/No/N/A selection
-  const handleAnswerChange = (questionId, answer) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: { ...prev[questionId], answer }
-    }));
-  };
-
-  // Handle Increase button (+1)
-  const handleIncrease = (questionId) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: { 
-        ...prev[questionId], 
-        value: (prev[questionId]?.value || 0) + 1 
-      }
-    }));
-  };
-
-  // Handle Decrease button (-1)
-  const handleDecrease = (questionId) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: { 
-        ...prev[questionId], 
-        value: (prev[questionId]?.value || 0) - 1 
-      }
-    }));
-  };
-
-  // Handle Default button (reset to 0)
-  const handleDefault = (questionId) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: { answer: null, value: 0 }
-    }));
-  };
-
-  // Reset all answers
+  const handleAnswerChange = (questionId, answer) => setAnswers(prev => ({ ...prev, [questionId]: { ...prev[questionId], answer } }));
+  const handleIncrease = (questionId) => setAnswers(prev => ({ ...prev, [questionId]: { ...prev[questionId], value: (prev[questionId]?.value || 0) + 1 } }));
+  const handleDecrease = (questionId) => setAnswers(prev => ({ ...prev, [questionId]: { ...prev[questionId], value: (prev[questionId]?.value || 0) - 1 } }));
+  const handleDefault = (questionId) => setAnswers(prev => ({ ...prev, [questionId]: { answer: null, value: 0 } }));
   const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset all answers?")) {
-      setAnswers(initAnswers());
-    }
+    if (window.confirm("Are you sure you want to reset all answers?")) setAnswers(initAnswers());
   };
+  const openSaveModal = () => { setSaveError(""); setShowSaveModal(true); };
 
-  // Save bid
   const handleSave = async () => {
-    if (!bidName.trim()) {
-      alert("Please enter a project name");
-      return;
-    }
-
+    if (!bidName.trim()) { setSaveError("Please enter a project name before saving."); return; }
     try {
       setSaving(true);
-      
-      const payload = {
-        bid_name: bidName,
-        bid_location: bidLocation,
-        answers: answers,
-        total_score: totalScore
-      };
-
+      setSaveError("");
+      const payload = { bid_name: bidName, bid_location: bidLocation, answers: answers, total_score: totalScore };
       let response;
-      if (id && id !== 'new') {
+      if (id && id !== "new") {
         response = await fetch(`${API_BASE_URL}/bids/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
+          method: "PUT", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify(payload)
         });
       } else {
         response = await fetch(`${API_BASE_URL}/bids`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
+          method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, body: JSON.stringify(payload)
         });
       }
-
-      if (!response.ok) {
-        throw new Error("Failed to save bid");
-      }
-
-      setSaving(false);
+      if (!response.ok) throw new Error("Failed to save bid");
       setShowSaveModal(false);
       navigate("/bid");
-      
-    } catch (err) {
-      alert(`Error: ${err.message}`);
-      setSaving(false);
-    }
+    } catch (err) { setSaveError(err.message); }
+    finally { setSaving(false); }
   };
 
-  if (loading) {
-    return (
-      <div style={styles.loading}>
-        <Spinner animation="border" variant="primary" />
-        <p>Loading bid data...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="bid-page bid-loading" role="status"><Spinner animation="border" size="sm" aria-hidden="true" /><span>Loading your evaluation…</span></div>;
 
   return (
-    <div style={styles.page}>
-      <div style={styles.topBar}>
-        <Button variant="outline-secondary" onClick={() => navigate("/bid")}>
-          ← Back to List
-        </Button>
-        <h1 style={styles.title}>
-          {id && id !== 'new' ? 'Edit BID Evaluation' : 'New BID Evaluation'}
-        </h1>
+    <div className="bid-page bid-detail-page">
+      <button className="bid-back-button" type="button" onClick={() => navigate("/bid")}><span aria-hidden="true">←</span> All evaluations</button>
+      <header className="bid-page-header bid-detail-header">
+        <div className="bid-heading-group"><span className="bid-eyebrow">Bid / No-bid</span><h1>{isEditing ? "A clearer view of the opportunity." : "Start with the right questions."}</h1><p>{bidName || (isEditing ? "Edit your saved evaluation." : "A new evaluation of project relationships, risk and readiness.")}{bidLocation ? ` · ${bidLocation}` : ""}</p></div>
+        <span className="bid-status-label">{isEditing ? "Editing evaluation" : "New evaluation"}</span>
+      </header>
+      {error && <div className="bid-notice bid-notice-error" role="alert"><div><strong>The saved evaluation couldn’t be loaded.</strong><p>{error}. Return to the list or try again before editing.</p></div><button className="bid-text-button" type="button" onClick={loadBid}>Try again</button></div>}
+      <section className="bid-score-overview" aria-label="Evaluation progress and scoring">
+        <div className="bid-total"><span className="bid-small-label">Total score</span><output className="bid-total-value" aria-live="polite">{totalScore > 0 ? "+" : ""}{totalScore}</output></div>
+        <div className="bid-score-explainer"><span className="bid-small-label">How it is calculated</span><p>Only answers marked “Yes” contribute their assigned value. Values start at 0; use − / + to adjust them.</p><span className="bid-progress-label">{answeredCount} of {questionCount} factors answered</span></div>
+        <div className="bid-score-actions"><button className="bid-text-button" type="button" onClick={handleReset} disabled={Boolean(error)}>Reset all</button><button className="bid-button bid-button-primary" type="button" onClick={openSaveModal} disabled={Boolean(error)}>Save evaluation <span aria-hidden="true">↗</span></button></div>
+      </section>
+      <div className="bid-question-sections">
+        {activeSections.map(([key, section]) => (
+          <section className="bid-question-section" key={key} aria-labelledby={`bid-section-${key}`}>
+            <div className="bid-section-heading bid-factor-section-heading"><h2 id={`bid-section-${key}`}>{section.title}</h2><span className="bid-small-label">{section.questions.length} factors</span></div>
+            <div className="bid-question-column-head" aria-hidden="true"><span>Factor</span><span>Answer</span><span>Assigned value</span></div>
+            {section.questions.map((q, index) => {
+              const userAnswer = answers[q.id] || { answer: null, value: 0 };
+              const isIncluded = userAnswer.answer === "Yes";
+              return (
+                <div className="bid-question-row" key={q.id}>
+                  <div className="bid-question-text"><span className="bid-factor-number">{String(index + 1).padStart(2, "0")}</span><label htmlFor={`bid-answer-${q.id}`}>{q.text}</label></div>
+                  <div className="bid-answer-field"><label className="bid-mobile-field-label" htmlFor={`bid-answer-${q.id}`}>Answer</label><select id={`bid-answer-${q.id}`} className="bid-select" value={userAnswer.answer || ""} disabled={Boolean(error)} onChange={event => handleAnswerChange(q.id, event.target.value)}><option value="">Unanswered</option><option value="Yes">Yes</option><option value="No">No</option><option value="N/A">N/A</option></select></div>
+                  <div className="bid-value-field"><span className="bid-mobile-field-label">Assigned value</span><div className="bid-value-controls"><button className="bid-step-button" type="button" disabled={Boolean(error)} onClick={() => handleDecrease(q.id)} aria-label={`Decrease value: ${q.text}`}>−</button><output className={`bid-factor-value${isIncluded ? " bid-factor-value-included" : ""}`} aria-label={`Assigned value for ${q.text}`}>{userAnswer.value > 0 ? "+" : ""}{userAnswer.value}</output><button className="bid-step-button" type="button" disabled={Boolean(error)} onClick={() => handleIncrease(q.id)} aria-label={`Increase value: ${q.text}`}>+</button><button className="bid-factor-reset" type="button" disabled={Boolean(error)} onClick={() => handleDefault(q.id)} aria-label={`Reset answer and value: ${q.text}`}>Reset</button></div><span className="bid-counting-note">{isIncluded ? "Included in total" : "Not included in total"}</span></div>
+                </div>
+              );
+            })}
+          </section>
+        ))}
       </div>
-
-      {error && (
-        <Alert variant="danger" onClose={() => setError("")} dismissible>
-          {error}
-        </Alert>
-      )}
-
-      <p style={styles.desc}>
-        This tool assists in evaluating bid-related factors, relationships, and project readiness.
-        <br />
-        <small style={{ color: '#999' }}>Note: Only questions marked as "Yes" will be counted in the total score.</small>
-      </p>
-
-      {/* Controls */}
-      <div style={styles.controls}>
-        <button style={styles.resetButton} onClick={handleReset}>
-          Reset
-        </button>
-        <div style={styles.scoreBox}>
-          <p style={styles.scoreLabel}>Your Score</p>
-          <p style={styles.scoreValue}>{totalScore}</p>
-        </div>
-        <button style={styles.updateButton} onClick={() => setShowSaveModal(true)}>
-          Save
-        </button>
-      </div>
-
-      {/* Table */}
-      <div style={styles.tableWrapper}>
-        <table style={styles.table}>
-          <thead>
-            <tr style={styles.headerRow}>
-              <th style={styles.headerCell}>Factors</th>
-              <th style={styles.headerCellSmall}>Yes/No</th>
-              <th style={styles.headerCellSmall}>Value</th>
-              <th style={styles.headerCellSmall}>Increase</th>
-              <th style={styles.headerCellSmall}>Decrease</th>
-              <th style={styles.headerCellSmall}>Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(bidQuestions).map(([key, section]) => (
-              <React.Fragment key={key}>
-                <tr style={styles.sectionRow}>
-                  <td colSpan="6" style={styles.sectionTitle}>
-                    {section.title}
-                  </td>
-                </tr>
-
-                {section.questions.length > 0 ? (
-                  section.questions.map(q => {
-                    const userAnswer = answers[q.id] || { answer: null, value: 0 };
-                    const isCountedInScore = userAnswer.answer === 'Yes' && userAnswer.value !== 0;
-                    
-                    return (
-                      <tr key={q.id} style={styles.dataRow}>
-                        <td style={styles.factorCell}>{q.text}</td>
-
-                        <td style={styles.cell}>
-                          <select
-                            value={userAnswer.answer || ''}
-                            onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                            style={styles.select}
-                          >
-                            <option value="">-</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                            <option value="N/A">N/A</option>
-                          </select>
-                        </td>
-
-                        {/* Display current value */}
-                        <td style={styles.cell}>
-                          <span style={{
-                            color: isCountedInScore 
-                              ? (userAnswer.value > 0 ? '#27ae60' : '#c0392b')
-                              : '#999',
-                            fontWeight: isCountedInScore ? 'bold' : 'normal',
-                            textDecoration: !isCountedInScore && userAnswer.value !== 0 ? 'line-through' : 'none'
-                          }}>
-                            {userAnswer.value > 0 ? '+' : ''}{userAnswer.value}
-                          </span>
-                        </td>
-
-                        {/* Increase button (+1) */}
-                        <td style={styles.cell}>
-                          <button
-                            onClick={() => handleIncrease(q.id)}
-                            style={styles.arrowButton}
-                          >
-                            <span style={{ color: '#27ae60', fontSize: '1.5rem' }}>▲</span>
-                          </button>
-                        </td>
-
-                        {/* Decrease button (-1) */}
-                        <td style={styles.cell}>
-                          <button
-                            onClick={() => handleDecrease(q.id)}
-                            style={styles.arrowButton}
-                          >
-                            <span style={{ color: '#c0392b', fontSize: '1.5rem' }}>▼</span>
-                          </button>
-                        </td>
-
-                        {/* Default button */}
-                        <td style={styles.cell}>
-                          <button
-                            onClick={() => handleDefault(q.id)}
-                            style={{
-                              ...styles.defaultButton,
-                              backgroundColor: userAnswer.value === 0 ? '#95a5a6' : '#ecf0f1'
-                            }}
-                          >
-                            ⚪
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="6" style={{ ...styles.cell, textAlign: 'center', color: '#999', fontStyle: 'italic' }}>
-                      No questions in this section
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Save Modal */}
-      <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Save BID Evaluation</Modal.Title>
-        </Modal.Header>
+      {emptySections.length > 0 && <details className="bid-empty-sections"><summary>{emptySections.length} sections have no configured questions</summary><ul>{emptySections.map(([key, section]) => <li key={key}>{section.title}</li>)}</ul></details>}
+      <footer className="bid-detail-footer"><p>The score is a sum of your inputs. No bid recommendation or decision threshold is defined here.</p><button className="bid-button bid-button-primary" type="button" onClick={openSaveModal} disabled={Boolean(error)}>Save evaluation <span aria-hidden="true">↗</span></button></footer>
+      <Modal show={showSaveModal} onHide={() => { if (!saving) setShowSaveModal(false); }} centered className="bid-save-modal" dialogClassName="bid-save-dialog" contentClassName="bid-save-content" aria-labelledby="bid-save-title">
+        <Modal.Header closeButton><div><span className="bid-eyebrow">Keep your work</span><Modal.Title id="bid-save-title">Save evaluation</Modal.Title></div></Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Project Name *</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter project name"
-                value={bidName}
-                onChange={(e) => setBidName(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Location</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter project location (optional)"
-                value={bidLocation}
-                onChange={(e) => setBidLocation(e.target.value)}
-              />
-            </Form.Group>
-
-            <div style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px' }}>
-              <p style={{ margin: 0, fontWeight: 'bold' }}>Total Score: {totalScore}</p>
-            </div>
-          </Form>
+          {saveError && <div className="bid-notice bid-notice-error" id="bid-save-error" role="alert">{saveError}</div>}
+          <form id="bid-save-form" onSubmit={event => { event.preventDefault(); handleSave(); }} noValidate>
+            <label className="bid-form-label" htmlFor="bid-project-name">Project name <span>Required</span></label><input id="bid-project-name" className="bid-input" value={bidName} placeholder="Enter project name" autoFocus aria-required="true" aria-invalid={Boolean(saveError && !bidName.trim())} aria-describedby={saveError ? "bid-save-error" : undefined} onChange={event => setBidName(event.target.value)} disabled={saving} />
+            <label className="bid-form-label" htmlFor="bid-project-location">Location <span>Optional</span></label><input id="bid-project-location" className="bid-input" value={bidLocation} placeholder="Enter project location" onChange={event => setBidLocation(event.target.value)} disabled={saving} />
+            <div className="bid-save-summary"><span>Total score</span><strong>{totalScore > 0 ? "+" : ""}{totalScore}</strong><span>{answeredCount} / {questionCount} answered</span></div>
+          </form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowSaveModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleSave} disabled={saving}>
-            {saving ? 'Saving...' : 'Save BID'}
-          </Button>
-        </Modal.Footer>
+        <Modal.Footer><button className="bid-button bid-button-secondary" type="button" disabled={saving} onClick={() => setShowSaveModal(false)}>Cancel</button><button className="bid-button bid-button-primary" type="submit" form="bid-save-form" disabled={saving}>{saving ? "Saving…" : "Save evaluation"}</button></Modal.Footer>
       </Modal>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    backgroundColor: "#f8fafc",
-    padding: "1rem",
-    fontFamily: "Segoe UI, Arial, sans-serif",
-    color: "#333",
-    minHeight: "100vh",
-  },
-  topBar: {
-    display: "flex",
-    alignItems: "center",
-    gap: "1rem",
-    marginBottom: "1rem",
-  },
-  title: {
-    color: "#002b5c",
-    marginBottom: "0.5rem",
-    fontSize: "clamp(1.5rem, 4vw, 2rem)",
-  },
-  desc: {
-    textAlign: "center",
-    color: "#555",
-    marginBottom: "1.5rem",
-    fontSize: "clamp(0.9rem, 2vw, 1rem)",
-  },
-  controls: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "1rem",
-    marginBottom: "2rem",
-    flexWrap: "wrap",
-  },
-  resetButton: {
-    backgroundColor: "#000",
-    color: "white",
-    border: "none",
-    padding: "0.8rem 2rem",
-    borderRadius: "30px",
-    fontSize: "1rem",
-    cursor: "pointer",
-    fontWeight: "600",
-  },
-  updateButton: {
-    backgroundColor: "#00d4d4",
-    color: "black",
-    border: "none",
-    padding: "0.8rem 2rem",
-    borderRadius: "8px",
-    fontSize: "1rem",
-    cursor: "pointer",
-    fontWeight: "700",
-  },
-  scoreBox: {
-    backgroundColor: "#1a1a1a",
-    color: "#f4c430",
-    borderRadius: "10px",
-    padding: "0.8rem 2rem",
-    textAlign: "center",
-    minWidth: "200px",
-  },
-  scoreLabel: {
-    margin: 0,
-    fontSize: "0.9rem",
-    letterSpacing: "0.5px",
-    fontWeight: "600",
-  },
-  scoreValue: {
-    margin: 0,
-    fontSize: "2rem",
-    fontWeight: "700",
-  },
-  loading: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "60vh",
-    gap: "1rem",
-  },
-  tableWrapper: {
-    overflowX: "auto",
-    WebkitOverflowScrolling: "touch",
-  },
-  table: {
-    borderCollapse: "collapse",
-    width: "100%",
-    minWidth: "800px",
-    backgroundColor: "white",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-  },
-  headerRow: {
-    backgroundColor: "#004080",
-    color: "white",
-  },
-  headerCell: {
-    padding: "12px 10px",
-    textAlign: "left",
-    fontWeight: "bold",
-    border: "1px solid #ccc",
-    fontSize: "clamp(0.8rem, 1.5vw, 1rem)",
-  },
-  headerCellSmall: {
-    padding: "12px 8px",
-    textAlign: "center",
-    fontWeight: "bold",
-    border: "1px solid #ccc",
-    fontSize: "clamp(0.75rem, 1.5vw, 0.9rem)",
-    minWidth: "80px",
-  },
-  sectionRow: {
-    backgroundColor: "#e6eef6",
-  },
-  sectionTitle: {
-    fontWeight: "600",
-    color: "#002b5c",
-    padding: "12px 10px",
-    border: "1px solid #ccc",
-    fontSize: "clamp(0.85rem, 1.8vw, 1rem)",
-  },
-  dataRow: {
-    textAlign: "center",
-  },
-  factorCell: {
-    textAlign: "left",
-    padding: "10px",
-    border: "1px solid #ccc",
-    fontSize: "clamp(0.8rem, 1.6vw, 0.95rem)",
-  },
-  cell: {
-    border: "1px solid #ccc",
-    padding: "10px",
-    fontSize: "clamp(0.8rem, 1.6vw, 0.95rem)",
-  },
-  select: {
-    padding: "0.4rem 0.6rem",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    fontSize: "0.9rem",
-    cursor: "pointer",
-    width: "90%",
-    maxWidth: "100px",
-  },
-  arrowButton: {
-    border: "none",
-    borderRadius: "4px",
-    width: "100%",
-    height: "40px",
-    cursor: "pointer",
-    transition: "all 0.2s",
-    backgroundColor: "transparent",
-  },
-  defaultButton: {
-    border: "2px solid #7f8c8d",
-    borderRadius: "50%",
-    width: "35px",
-    height: "35px",
-    cursor: "pointer",
-    fontSize: "1.2rem",
-    transition: "all 0.2s",
-  },
-};
 
 export default BidDetail;
