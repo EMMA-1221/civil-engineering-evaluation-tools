@@ -73,7 +73,7 @@ function BidList() {
             <button className="bid-button bid-button-secondary" type="button" onClick={error ? fetchBids : () => navigate("/bid/new")}>{error ? "Try again" : "Start your first evaluation"}<span aria-hidden="true">→</span></button>
           </div>
         ) : (
-          <table className="bid-project-table">
+          <table className={`bid-project-table${isAdmin ? " bid-project-table-admin" : ""}`}>
             <thead><tr><th scope="col">Project</th><th scope="col">Location</th><th scope="col">Score</th>{isAdmin && <th scope="col">Created by</th>}<th scope="col">Timeline</th><th scope="col" className="bid-action-heading">Actions</th></tr></thead>
             <tbody>{bids.map(bid => (
               <tr key={bid.id}>
