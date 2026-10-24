@@ -90,14 +90,14 @@
 .hcg-input-wrap { position:relative; }
 .hcg-input-wrap > svg { position:absolute; left:14px; top:16px; width:16px; height:16px; color:#728297; pointer-events:none; }
 .hcg-input-wrap input { width:100%; min-height:49px; padding:13px 42px; border:1px solid rgba(113,134,160,.26); background:rgba(250,252,255,.55); box-shadow:inset 0 1px 2px #15273f0a,0 1px 0 #ffffff33; color:var(--hcg-ink); border-radius:13px; font-size:13px; line-height:1.5; }
-.hcg-input-wrap input::placeholder { color:#7c8799; opacity:1; }
+.hcg-input-wrap input::placeholder { color:#526177; opacity:1; }
 .hcg-input-wrap input:focus { background:#ffffffc9; }
 .hcg-input-wrap input:disabled { opacity:.65; }
-.hcg-password-toggle { position:absolute; right:4px; top:3px; width:43px; height:43px; display:grid; place-items:center; border:0; border-radius:10px; background:transparent; color:#677b93; }
+.hcg-password-toggle { position:absolute; right:4px; top:3px; width:43px; height:43px; display:grid; place-items:center; border:0; border-radius:10px; background:transparent; color:#52677f; }
 .hcg-password-toggle:hover { background:#dae3f05c; }
 .hcg-login-submit { width:100%; margin-top:5px; box-shadow:0 8px 20px #2d5fbd20; min-height:49px; }
-.hcg-switch-copy { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; text-align:center; color:#40516a; font-size:11px; margin:26px 0 0; }
-.hcg-switch-copy button { border:0; background:transparent; color:var(--hcg-blue); font-size:11px; font-weight:550; padding:0 3px; }
+.hcg-switch-copy { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; text-align:center; color:var(--hcg-ink); font-size:11px; margin:26px 0 0; }
+.hcg-switch-copy button { border:0; background:transparent; color:#193664; font-size:11px; font-weight:550; padding:0 3px; }
 .hcg-switch-copy button:hover { text-decoration:underline; }
 @media(prefers-reduced-transparency:reduce) { .hcg-login-panel { background:#eef3fa; backdrop-filter:none; -webkit-backdrop-filter:none; } .hcg-input-wrap input { background:#fafcff; } }
 @media(forced-colors:active) { .hcg-login-panel { background:Canvas; border-color:CanvasText; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; } .hcg-input-wrap input { background:Field; color:FieldText; border-color:ButtonText; box-shadow:none; } .hcg-switch-copy { color:CanvasText; } }
