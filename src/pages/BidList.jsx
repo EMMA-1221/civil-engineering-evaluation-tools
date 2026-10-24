@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { Spinner } from "react-bootstrap";
@@ -15,9 +15,7 @@ function BidList() {
   const user = userStr ? JSON.parse(userStr) : null;
   const isAdmin = user?.role === "admin";
 
-  useEffect(() => { fetchBids(); }, []);
-
-  const fetchBids = async () => {
+  const fetchBids = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -27,7 +25,9 @@ function BidList() {
       setBids(data);
     } catch (err) { setError(err.message); }
     finally { setLoading(false); }
-  };
+  }, [token]);
+
+  useEffect(() => { fetchBids(); }, [fetchBids]);
 
   const handleDeleteBid = async (bidId, bidName) => {
     if (!window.confirm(`Are you sure you want to delete "${bidName}"?`)) return;
