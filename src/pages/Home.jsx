@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../Productivitycontext";
+import { useAuth } from "../hooks/useAuth";
 import Icon from "../components/Icon.jsx";
 
 export default function Home() {
