@@ -8,6 +8,14 @@ Every tool route waits for a successful server session verification before openi
 
 Navigation, focus, and page restoration recheck the session. While rechecking, an already verified editor is hidden and inert without discarding its unsaved inputs. A temporary verification failure stays closed and offers retry; rejected or expired credentials return to sign-in. Server endpoints separately enforce authentication and project ownership.
 
+## Admin console
+
+Administrators have a visible **Admin** navigation entry at `/#/admin`. The read-only overview shows both tools' saved projects, owners and update times, with project/owner search, a tool filter, and links to open projects in their existing editors. Counts come from the verified project lists. Loading failures and denied access hide project information and offer retry; account changes cancel earlier requests and clear the previous overview.
+
+`GET /api/admin/overview` authenticates the session and checks the account's **current role in the database** before reading project metadata. A cached administrator role or an old token cannot grant this endpoint access after demotion. Public registration always creates a regular `user` account; the console has no account-role editing capability. Its route exposes neither passwords nor answer documents or weekly inputs.
+
+Install `backend-compat/admin-overview-service.cjs` through `backend-compat/patch-admin-backend.cjs` before publishing the Admin frontend. The patcher requires the Productivity v2 patch and matching `productivity-v2-service.cjs` / `productivity-v2-model.cjs` helpers already installed next to the existing server. It defaults to a dry-run; applying requires `--apply --backup-dir=/private/external/directory` with an existing private backup directory outside the backend source (mode `0700`). It installs the Admin helper and atomically patches the server, without changing the database schema or restarting the process. Check syntax, restart the same backend service, and verify administrator success plus regular-user rejection before releasing the frontend.
+
 ## Bid evaluations
 
 New evaluations use all **62 questions across nine collapsible sections**, with default weights transcribed from the original Bid workbook’s C column. The first section opens initially; Expand all and Collapse all are also available. Collapsing a section never changes its answers or score.
