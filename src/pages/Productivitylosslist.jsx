@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../Productivitycontext';
+import { AuthContext } from '../contexts';
 import './ProductivitylossList.css';
 import './ProductivityUI.css';
 
@@ -16,10 +16,6 @@ const ProductivityLossList = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchProductivityLosses();
-  }, []);
-
   const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return {
@@ -28,7 +24,7 @@ const ProductivityLossList = () => {
     };
   };
 
-  const fetchProductivityLosses = async () => {
+  const fetchProductivityLosses = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -57,7 +53,11 @@ const ProductivityLossList = () => {
       console.error('Error fetching productivity losses:', error);
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchProductivityLosses();
+  }, [fetchProductivityLosses]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -81,7 +81,6 @@ const ProductivityLossList = () => {
         throw new Error('Failed to create productivity loss project');
       }
 
-      const data = await response.json();
       alert('Productivity Loss project created successfully!');
       setShowNewModal(false);
       setNewProjectName('');
