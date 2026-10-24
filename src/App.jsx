@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { HashRouter, Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ProductivityProvider, AuthProvider, useAuth } from "./Productivitycontext";
+import { ProductivityProvider, AuthProvider } from "./Productivitycontext";
+import { useAuth } from "./hooks/useAuth";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
