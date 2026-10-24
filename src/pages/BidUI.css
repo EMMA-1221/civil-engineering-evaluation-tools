@@ -12,13 +12,13 @@
 .bid-heading-group h1 { color:var(--hcg-ink,#243143); font-size:clamp(29px,3.5vw,43px); font-weight:500; letter-spacing:-.045em; line-height:1.16; overflow-wrap:anywhere; }
 .bid-heading-group>p { max-width:620px; margin-top:17px; color:var(--hcg-muted,#626e7e); font-size:16px; overflow-wrap:anywhere; }
 .bid-editorial-break { display:none; }
-.bid-page .bid-button,.bid-save-modal .bid-button { display:inline-flex; justify-content:center; align-items:center; gap:15px; border:1px solid transparent; border-radius:7px; min-height:48px; padding:12px 20px; font-size:16px; font-weight:500; text-decoration:none; text-align:center; line-height:1.35; transition:background .15s,border-color .15s; }
+.bid-page .bid-button,.bid-save-modal .bid-button { display:inline-flex; justify-content:center; align-items:center; gap:15px; border:1px solid transparent; border-radius:7px; min-height:43px; padding:9px 18px; font-size:16px; font-weight:500; text-decoration:none; text-align:center; line-height:1.25; transition:background .15s,border-color .15s; }
 .bid-button span[aria-hidden] { font-size:17px; }
 .bid-button-primary { background:var(--hcg-blue,#2d5fbd); border-color:var(--hcg-blue,#2d5fbd); color:#fff; }
 .bid-button-primary:hover:not(:disabled) { background:#244fa0; border-color:#244fa0; }
 .bid-page .bid-button-secondary,.bid-save-modal .bid-button-secondary { color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); border-color:var(--hcg-line,#dbe1e8); }
 .bid-button-secondary:hover:not(:disabled) { background:var(--hcg-soft,#eef2f6); }
-.bid-page .bid-button-small { min-height:44px; padding:9px 13px; font-size:15px; }
+.bid-page .bid-button-small { min-height:35px; padding:6px 11px; font-size:15px; }
 .bid-text-button,.bid-back-button,.bid-factor-reset,.bid-project-link { border:0; background:transparent; color:var(--hcg-blue,#2d5fbd); padding:5px 0; text-align:left; text-decoration:none; }
 .bid-text-button:hover:not(:disabled),.bid-back-button:hover:not(:disabled),.bid-project-link:hover:not(:disabled),.bid-factor-reset:hover:not(:disabled) { text-decoration:underline; text-underline-offset:4px; }
 .bid-text-button { font-size:15px; }
@@ -68,27 +68,27 @@
 .bid-score-overview { display:grid; grid-template-columns:116px minmax(0,1fr) auto; gap:28px; align-items:center; padding:24px 0; border-top:1px solid var(--hcg-line,#dbe1e8); border-bottom:1px solid var(--hcg-line,#dbe1e8); margin-bottom:13px; }
 .bid-total { display:flex; flex-direction:column; gap:3px; }
 .bid-total-value { font-size:37px; font-weight:500; line-height:1.15; color:var(--hcg-ink,#243143); font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
-.bid-score-explainer p { max-width:490px; margin:5px 0 8px; color:var(--hcg-muted,#626e7e); font-size:15px; }
+.bid-score-explainer p { max-width:490px; margin:5px 0 8px; color:var(--hcg-muted,#626e7e); font-size:16px; }
 .bid-progress-label { color:var(--hcg-ink,#243143); font-size:14px; font-variant-numeric:tabular-nums; }
 .bid-score-actions { display:flex; align-items:center; gap:17px; flex-wrap:wrap; justify-content:flex-end; }
 .bid-question-section { margin-top:29px; }
 .bid-factor-section-heading { align-items:flex-start; padding-top:0; padding-bottom:17px; border-bottom:1px solid var(--hcg-line,#dbe1e8); }
-.bid-factor-section-heading h2 { max-width:790px; padding-right:10px; line-height:1.5; font-size:18px; font-weight:500; }
+.bid-factor-section-heading h2 { max-width:790px; padding-right:10px; line-height:1.5; font-size:19px; font-weight:500; }
 .bid-factor-section-heading .bid-small-label { flex-shrink:0; padding-top:3px; }
 .bid-question-column-head,.bid-question-row { display:grid; grid-template-columns:minmax(0,1fr) 132px 205px; gap:25px; align-items:center; }
-.bid-question-column-head { padding:12px 0 9px; color:var(--hcg-muted,#626e7e); font-size:14px; }
+.bid-question-column-head { padding:12px 0 9px; color:var(--hcg-muted,#626e7e); font-size:16px; }
 .bid-question-row { padding:20px 0; border-bottom:1px solid var(--hcg-line,#dbe1e8); }
-.bid-question-text { display:grid; grid-template-columns:25px minmax(0,1fr); gap:9px; font-size:16px; line-height:1.55; }
+.bid-question-text { display:grid; grid-template-columns:25px minmax(0,1fr); gap:9px; font-size:18px; line-height:1.55; }
 .bid-factor-number { padding-top:2px; color:var(--hcg-muted,#626e7e); font-size:14px; font-variant-numeric:tabular-nums; }
 .bid-question-text label { cursor:pointer; overflow-wrap:anywhere; }
-.bid-select { width:100%; max-width:100%; min-width:0; min-height:39px; padding:8px 24px 8px 10px; color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); border:1px solid var(--hcg-line,#dbe1e8); border-radius:6px; font-size:15px; }
+.bid-page .bid-select { width:100%; max-width:100%; min-width:0; min-height:39px; padding:7px 26px 7px 10px; color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); border:1px solid var(--hcg-line,#dbe1e8); border-radius:6px; font-size:16px; line-height:1.4; }
 .bid-value-controls { display:grid; grid-template-columns:31px minmax(35px,1fr) 31px auto; align-items:center; gap:7px; }
 .bid-step-button { display:grid; place-items:center; width:31px; height:33px; padding:0; border:1px solid var(--hcg-line,#dbe1e8); border-radius:5px; color:var(--hcg-ink,#243143); background:var(--hcg-paper,#fff); font-size:18px; }
 .bid-step-button:hover:not(:disabled) { background:var(--hcg-soft,#eef2f6); }
 .bid-factor-value { text-align:center; color:var(--hcg-muted,#626e7e); font-size:16px; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
 .bid-factor-value-included { color:var(--hcg-blue,#2d5fbd); font-weight:500; }
 .bid-factor-reset { margin-left:4px; color:var(--hcg-muted,#626e7e); font-size:14px; }
-.bid-counting-note { display:block; margin-top:5px; color:var(--hcg-muted,#626e7e); font-size:14px; }
+.bid-counting-note { display:block; margin-top:6px; color:#526278; font-size:15px; line-height:1.5; }
 .bid-mobile-field-label { display:none; }
 .bid-empty-sections { margin-top:28px; border-bottom:1px solid var(--hcg-line,#dbe1e8); padding-bottom:23px; color:var(--hcg-muted,#626e7e); font-size:15px; }
 .bid-empty-sections summary { cursor:pointer; }
@@ -135,7 +135,7 @@
   .bid-question-row { grid-template-columns:minmax(100px,.7fr) minmax(0,1fr); gap:15px 24px; padding:21px 0; }
   .bid-question-text { grid-column:1 / -1; }
   .bid-answer-field { padding-left:34px; }
-  .bid-mobile-field-label { display:block; color:var(--hcg-muted,#626e7e); font-size:14px; margin-bottom:6px; }
+  .bid-mobile-field-label { display:block; color:var(--hcg-muted,#626e7e); font-size:16px; margin-bottom:6px; }
   .bid-value-controls { max-width:230px; }
 }
 @media(max-width:560px) {
@@ -156,14 +156,14 @@
   .bid-score-overview { grid-template-columns:68px minmax(0,1fr); gap:16px; }
   .bid-total-value { font-size:33px; }
   .bid-score-actions { justify-content:space-between; gap:12px; }
-  .bid-score-explainer p { font-size:14px; }
+  .bid-score-explainer p { font-size:16px; }
   .bid-factor-section-heading { display:block; }
-  .bid-factor-section-heading h2 { padding:0; font-size:16px; }
+  .bid-factor-section-heading h2 { padding:0; font-size:18px; }
   .bid-factor-section-heading .bid-small-label { display:block; margin-top:8px; }
   .bid-question-row { grid-template-columns:minmax(0,1fr); gap:12px; }
-  .bid-question-text { grid-column:auto; font-size:16px; }
+  .bid-question-text { grid-column:auto; font-size:18px; }
   .bid-answer-field,.bid-value-field { padding-left:34px; }
-  .bid-select { max-width:170px; }
+  .bid-page .bid-select { max-width:170px; }
   .bid-detail-footer { align-items:flex-start; flex-direction:column; gap:18px; }
   .bid-save-modal .modal-header { padding:23px 20px 17px; }
   .bid-save-modal .modal-body { padding:21px 20px; }
@@ -171,9 +171,9 @@
   .bid-save-modal .modal-footer .bid-button { padding-left:13px; padding-right:13px; }
 }
 @media(pointer:coarse) {
-  .bid-button,.bid-text-button,.bid-back-button,.bid-factor-reset,.bid-step-button { min-height:44px; }
+  .bid-page .bid-button,.bid-save-modal .bid-button,.bid-text-button,.bid-back-button,.bid-factor-reset,.bid-step-button { min-height:44px; }
   .bid-step-button { width:40px; }
   .bid-value-controls { grid-template-columns:40px minmax(30px,1fr) 40px auto; }
-  .bid-select,.bid-input { min-height:44px; font-size:16px; }
+  .bid-page .bid-select,.bid-input { min-height:44px; font-size:16px; }
 }
 @media(prefers-reduced-motion:reduce) { .bid-button { transition:none; } }
