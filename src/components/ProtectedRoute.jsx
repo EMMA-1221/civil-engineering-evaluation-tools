@@ -2,33 +2,66 @@ import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import { useAuth } from "../hooks/useAuth";
+import { tokenIsExpired } from "../authSession";
 
 export default function ProtectedRoute({ children }) {
   const location = useLocation();
-  const { logout } = useAuth();
-  const token = localStorage.getItem("token");
-  const [verification, setVerification] = useState({ token:null, valid:null });
-  const isVerified = !token ? false : verification.token === token ? verification.valid : null;
+  const { token, sessionVersion, logout, syncSession, isCurrentSession, acceptVerifiedUser } = useAuth();
+  const [check, setCheck] = useState(0);
+  const [verification, setVerification] = useState({ token: null, version: null, key: null });
+  const [failure, setFailure] = useState({ key: null, message: '' });
+  const checkKey = `${sessionVersion}:${location.key}:${check}`;
+  const expired = tokenIsExpired(token);
+  const hasVerifiedSession = Boolean(token) && !expired && verification.token === token && verification.version === sessionVersion;
+  const isVerified = hasVerifiedSession && verification.key === checkKey;
 
   useEffect(() => {
-    if (!token) { logout(); return; }
+    const recheck = () => { syncSession(); setCheck(value => value + 1); };
+    const visible = () => { if (document.visibilityState === 'visible') recheck(); };
+    window.addEventListener('focus', recheck);
+    window.addEventListener('pageshow', recheck);
+    document.addEventListener('visibilitychange', visible);
+    return () => {
+      window.removeEventListener('focus', recheck);
+      window.removeEventListener('pageshow', recheck);
+      document.removeEventListener('visibilitychange', visible);
+    };
+  }, [syncSession]);
+
+  useEffect(() => {
+    if (!token) return;
+    const expected = { token, version: sessionVersion };
+    if (expired) { logout(expected); return; }
     const controller = new AbortController();
-    const isCurrent = () => !controller.signal.aborted && localStorage.getItem("token") === token;
+    const isCurrent = () => !controller.signal.aborted && isCurrentSession(expected);
     fetch(`${API_BASE_URL}/verify`, { headers:{Authorization:`Bearer ${token}`}, signal:controller.signal })
-      .then(response => {
+      .then(async response => {
+        const data = await response.json().catch(() => null);
         if (!isCurrent()) return;
-        if (!response.ok) logout();
-        setVerification({token, valid:response.ok});
+        if (response.status === 401 || response.status === 403 || (response.ok && data?.valid !== true)) {
+          logout(expected);
+          return;
+        }
+        if (!response.ok) throw new Error('Session verification is temporarily unavailable. Please try again.');
+        if (!acceptVerifiedUser(expected, data.user)) { logout(expected); return; }
+        setVerification({ token, version: sessionVersion, key: checkKey });
       })
       .catch(() => {
         if (!isCurrent()) return;
-        logout();
-        setVerification({token, valid:false});
+        setFailure({ key: checkKey, message: 'We couldn’t verify your session. Check your connection and try again.' });
       });
     return () => controller.abort();
-  }, [token, logout]);
+  }, [token, sessionVersion, expired, checkKey, logout, isCurrentSession, acceptVerifiedUser]);
 
-  if (isVerified === null) return <div className="hcg-route-loader" role="status"><span className="hcg-route-spinner" /><p>Opening your workspace…</p></div>;
-  if (!isVerified) return <Navigate to="/login" replace state={{from:location}} />;
-  return children;
+  if (!token || expired) return <Navigate to="/login" replace state={{from:location}} />;
+  return <>
+    {!isVerified && (failure.key === checkKey
+      ? <div className="hcg-route-loader" role="alert"><p>{failure.message}</p><button type="button" className="hcg-button" onClick={() => { syncSession(); setCheck(value => value + 1); }}>Try again</button></div>
+      : <div className="hcg-route-loader" role="status"><span className="hcg-route-spinner" /><p>Opening your workspace…</p></div>)}
+    {/* Rechecking focus or a mode switch must hide stale access without losing
+        an already authenticated editor's unsaved work. Account changes remount it. */}
+    <div key={sessionVersion} hidden={!isVerified} inert={!isVerified}>
+      {hasVerifiedSession ? children : null}
+    </div>
+  </>;
 }

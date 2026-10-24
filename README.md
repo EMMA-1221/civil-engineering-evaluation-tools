@@ -2,6 +2,12 @@
 
 React + Vite frontend for the existing HCG WAY engineering tools. Hash routes cover account access, the tool workspace, Bid evaluations, and Proactive/Retroactive productivity analysis. The editorial interface uses a lake backdrop and translucent public pages, with solid reading surfaces for assessments and tables.
 
+## Access and sessions
+
+Every tool route waits for a successful server session verification before opening. Cached user details or JWT claims never grant access. Session changes synchronize across tabs, expiration closes an open tool, and changing accounts remounts editors so another account cannot inherit a draft. Verification responses from an earlier session cannot overwrite or sign out a newer session.
+
+Navigation, focus, and page restoration recheck the session. While rechecking, an already verified editor is hidden and inert without discarding its unsaved inputs. A temporary verification failure stays closed and offers retry; rejected or expired credentials return to sign-in. Server endpoints separately enforce authentication and project ownership.
+
 ## Bid evaluations
 
 New evaluations use all **62 questions across nine collapsible sections**, with default weights transcribed from the original Bid workbook’s C column. The first section opens initially; Expand all and Collapse all are also available. Collapsing a section never changes its answers or score.

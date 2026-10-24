@@ -1,47 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { AuthContext, ProductivityContext } from './contexts';
+import { createAuthSessionStore, tokenIsExpired } from './authSession';
 
 // Auth Provider (新增的)
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // 从 localStorage 加载用户信息
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-    
-    if (token && userStr) {
-      try {
-        const userData = JSON.parse(userStr);
-        setUser(userData);
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      }
-    }
-    setLoading(false);
-  }, []);
-
-  const login = useCallback((userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-  }, []);
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-  }, []);
-
+  const [sessionStore] = useState(() => createAuthSessionStore({ storage: window.localStorage }));
+  const session = useSyncExternalStore(sessionStore.subscribe, sessionStore.getSnapshot);
+  useEffect(() => sessionStore.listen(window), [sessionStore]);
   const value = {
-    user,
-    setUser,
-    login,
-    logout,
-    loading
+    user: tokenIsExpired(session.token) ? null : session.user,
+    token: session.token,
+    sessionVersion: session.version,
+    setUser: sessionStore.setUser,
+    login: sessionStore.login,
+    logout: sessionStore.logout,
+    loading: false,
+    syncSession: sessionStore.sync,
+    isCurrentSession: sessionStore.isCurrent,
+    acceptVerifiedUser: sessionStore.acceptVerifiedUser,
   };
 
   return (
