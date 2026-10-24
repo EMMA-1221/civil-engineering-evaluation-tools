@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { API_BASE_URL } from "../config";
-import { useAuth } from "../Productivitycontext";
+import { useAuth } from "../hooks/useAuth";
 import Icon from "../components/Icon.jsx";
 
 export default function Login() {
