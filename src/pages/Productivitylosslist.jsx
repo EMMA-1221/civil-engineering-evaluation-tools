@@ -1,369 +1,108 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../contexts';
+import { useAuth } from '../hooks/useAuth';
+import { createProductivityDocument } from '../productivityDocument';
 import './ProductivitylossList.css';
 import './ProductivityUI.css';
 
-const ProductivityLossList = () => {
-  const [productivityLosses, setProductivityLosses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showNewModal, setShowNewModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
-  const [newProjectName, setNewProjectName] = useState('');
-  const [totalWeeks, setTotalWeeks] = useState(14);
-  const [editWeeks, setEditWeeks] = useState(14);
-  const { user } = useContext(AuthContext);
+async function responseData(response) {
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.msg || `The request failed (${response.status}).`);
+  return data;
+}
+const loss = value => Number.isFinite(Number(value)) ? Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—';
+const date = value => { const parsed = new Date(value); return Number.isNaN(parsed.getTime()) ? '—' : parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); };
+
+export default function ProductivityLossList() {
+  const { user } = useAuth();
+  const token = localStorage.getItem('token');
+  return <ProjectLibrary key={`${user?.id}:${token}`} user={user} token={token} />;
+}
+
+function ProjectLibrary({ user, token }) {
   const navigate = useNavigate();
-
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-  };
-
-  const fetchProductivityLosses = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      const response = await fetch('/api/productivity-losses', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          navigate('/login');
-          return;
-        }
-        throw new Error('Failed to fetch productivity losses');
-      }
-
-      const data = await response.json();
-      setProductivityLosses(data.productivityLosses || []);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching productivity losses:', error);
-      setLoading(false);
-    }
-  }, [navigate]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [refresh, setRefresh] = useState(0);
+  const [showCreate, setShowCreate] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState(null);
+  const [createError, setCreateError] = useState('');
+  const [name, setName] = useState('');
+  const [weekCount, setWeekCount] = useState('14');
+  const createLock = useRef(false);
+  const deleteLock = useRef(false);
+  const alive = useRef(false);
 
   useEffect(() => {
-    fetchProductivityLosses();
-  }, [fetchProductivityLosses]);
+    const controller = new AbortController();
+    alive.current = true;
+    const load = async () => {
+      try {
+        const data = await responseData(await fetch('/api/productivity-losses', { headers: { Authorization: `Bearer ${token}` }, signal: controller.signal }));
+        if (!Array.isArray(data.productivityLosses)) throw new Error('The project list could not be verified.');
+        if (controller.signal.aborted) return;
+        setProjects(data.productivityLosses); setError(''); setLoading(false);
+      } catch (failure) { if (!controller.signal.aborted) { setError(failure.message); setLoading(false); } }
+    };
+    load();
+    return () => { alive.current = false; controller.abort(); };
+  }, [token, refresh]);
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    
-    if (!newProjectName.trim()) {
-      alert('Please enter a project name');
-      return;
-    }
-
+  const reload = () => { setLoading(true); setError(''); setRefresh(value => value + 1); };
+  const open = id => navigate(`/productivity-analysis?productivityLoss=${id}&mode=proactive`);
+  const create = async event => {
+    event.preventDefault();
+    if (createLock.current) return;
+    const count = Number(weekCount);
+    if (!name.trim() || name.trim().length > 255) { setCreateError('Enter a project name of 1–255 characters.'); return; }
+    if (!Number.isInteger(count) || count < 1 || count > 52) { setCreateError('Enter a whole number from 1 to 52 weeks.'); return; }
+    createLock.current = true; setCreating(true); setCreateError('');
     try {
-      const response = await fetch('/api/productivity-losses', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          project_name: newProjectName,
-          total_weeks: totalWeeks
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create productivity loss project');
-      }
-
-      alert('Productivity Loss project created successfully!');
-      setShowNewModal(false);
-      setNewProjectName('');
-      setTotalWeeks(14);
-      fetchProductivityLosses();
-    } catch (error) {
-      console.error('Error creating productivity loss:', error);
-      alert('Failed to create productivity loss project');
-    }
+      const data = await responseData(await fetch('/api/productivity-losses-v2', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ project_name: name.trim(), total_weeks: count, document: createProductivityDocument(count) }),
+      }));
+      const id = data.project_id;
+      if (!Number.isInteger(id) || id < 1) throw new Error('The creation result could not be verified. Refresh the project list before trying again.');
+      if (!alive.current) return;
+      setShowCreate(false); open(id);
+    } catch (failure) { if (alive.current) setCreateError(failure.message); }
+    finally { if (alive.current) { createLock.current = false; setCreating(false); } }
   };
-
-  const handleDelete = async (id, projectName) => {
-    if (!window.confirm(`Are you sure you want to delete "${projectName}"? This action cannot be undone.`)) {
-      return;
-    }
-
+  const remove = async project => {
+    if (deleteLock.current) return;
+    if (!window.confirm(`Permanently delete “${project.project_name}” and all its weekly inputs? This cannot be undone in the website.`)) return;
+    const id = project.project_id || project.id;
+    deleteLock.current = true; setDeleting(id); setError('');
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/productivity-losses/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete productivity loss');
-      }
-
-      alert('Productivity Loss project deleted successfully!');
-      fetchProductivityLosses();
-    } catch (error) {
-      console.error('Error deleting productivity loss:', error);
-      alert('Failed to delete productivity loss project');
-    }
+      const version2 = Number(project.model_version) === 2;
+      await responseData(await fetch(`/api/productivity-losses/${id}${version2 ? '/v2' : ''}`, {
+        method: 'DELETE', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        ...(version2 ? { body: JSON.stringify({ expectedRevision: project.revision }) } : {}),
+      }));
+      if (!alive.current) return;
+      setProjects(current => current.filter(item => (item.project_id || item.id) !== id));
+    } catch (failure) { if (alive.current) setError(failure.message); }
+    finally { if (alive.current) { deleteLock.current = false; setDeleting(null); } }
   };
 
-  const handleView = (id) => {
-    navigate(`/productivity-analysis?productivityLoss=${id}`);
-  };
-
-  const handleEdit = (project) => {
-    setEditingProject(project);
-    setEditWeeks(project.total_weeks);
-    setShowEditModal(true);
-  };
-
-  const handleEditSave = async () => {
-    if (!editingProject) return;
-
-    if (editWeeks < 1 || editWeeks > 52) {
-      alert('Total weeks must be between 1 and 52');
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`/api/productivity-losses/${editingProject.project_id || editingProject.id}/weeks-count`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ total_weeks: editWeeks })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update project weeks');
-      }
-
-      const data = await response.json();
-      alert(`Project updated successfully!\n\nOld weeks: ${data.old_weeks}\nNew weeks: ${data.new_weeks}`);
-      setShowEditModal(false);
-      setEditingProject(null);
-      fetchProductivityLosses();
-    } catch (error) {
-      console.error('Error updating project weeks:', error);
-      alert('Failed to update project weeks');
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    });
-  };
-
-  const formatNumber = (value) => {
-    if (!value || value === 0) return '0.00';
-    return parseFloat(value).toFixed(2);
-  };
-
-  if (loading) {
-    return (
-      <div className="hcg-tools hcg-prod productivity-loss-container">
-        <div className="loading">Loading productivity losses...</div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="hcg-tools hcg-prod productivity-loss-container">
-      <div className="productivity-loss-header">
-        <div>
-          <p className="prod-eyebrow">Productivity · Project library</p>
-          <h1>Your productivity projects.</h1>
-          <p className="projects-intro">Revisit your analyses, compare results and keep the work moving.</p>
-        </div>
-        <div className="header-buttons">
-          <button className="btn btn-primary" onClick={() => setShowNewModal(true)}>
-            + New Project
-          </button>
-          <button className="btn btn-secondary" onClick={() => navigate('/')}>
-            Home
-          </button>
-        </div>
-      </div>
-
-      <div className="productivity-loss-content">
-        <div className="user-info">
-          <div>
-            <span className="project-owner-label">Workspace</span> {user?.username || ''}
-          </div>
-          <div>
-            <span className={`role-badge ${user?.role === 'admin' ? 'admin' : ''}`}>
-              {user?.role?.toUpperCase() || 'USER'}
-            </span>
-          </div>
-        </div>
-
-        {productivityLosses.length === 0 ? (
-          <div className="no-projects">
-            <h2>A place for your next analysis.</h2>
-            <p>Create a project to bring your weekly hours and impact factors together.</p>
-            <button className="btn btn-primary" onClick={() => setShowNewModal(true)}>
-              + Create Project
-            </button>
-          </div>
-        ) : (
-          <div className="projects-container">
-            <table className="projects-table">
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  {user?.role === 'admin' && <th>Owner</th>}
-                  <th>Total Weeks</th>
-                  <th>Proactive Loss</th>
-                  <th>Retroactive Loss</th>
-                  <th>Created</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productivityLosses.map((item) => (
-                  <tr key={item.project_id || item.id}>
-                    <td className="project-name">{item.project_name}</td>
-                    {user?.role === 'admin' && <td>{item.username}</td>}
-                    <td>{item.total_weeks} weeks</td>
-                    <td className="loss-value proactive">
-                      {formatNumber(item.total_proactive_loss)} hrs
-                    </td>
-                    <td className="loss-value retroactive">
-                      {formatNumber(item.total_retroactive_loss)} hrs
-                    </td>
-                    <td>{formatDate(item.created_at)}</td>
-                    <td>
-                      <div className="action-buttons">
-                        <button 
-                          className="btn btn-primary btn-small"
-                          onClick={() => handleView(item.project_id || item.id)}
-                        >
-                          View
-                        </button>
-                        <button 
-                          className="btn btn-secondary btn-small"
-                          onClick={() => handleEdit(item)}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          className="btn btn-danger btn-small"
-                          onClick={() => handleDelete(item.project_id || item.id, item.project_name)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* New Productivity Loss Modal */}
-      {showNewModal && (
-        <div className="modal-overlay active" onClick={() => setShowNewModal(false)}>
-          <div className="modal-content" role="dialog" aria-modal="true" aria-label="Productivity project" onClick={(e) => e.stopPropagation()}>
-            <h2>Create New Productivity Loss Project</h2>
-            <form onSubmit={handleCreate}>
-              <div className="form-group">
-                <label htmlFor="projectName">Project Name *</label>
-                <input
-                  type="text"
-                  id="projectName"
-                  value={newProjectName}
-                  onChange={(e) => setNewProjectName(e.target.value)}
-                  placeholder="Enter project name"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="totalWeeks">Total Weeks</label>
-                <input
-                  type="number"
-                  id="totalWeeks"
-                  value={totalWeeks}
-                  onChange={(e) => setTotalWeeks(parseInt(e.target.value))}
-                  min="1"
-                  max="52"
-                />
-              </div>
-              <div className="modal-buttons">
-                <button 
-                  type="button" 
-                  className="btn btn-secondary"
-                  onClick={() => setShowNewModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Create Project
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Project Weeks Modal */}
-      {showEditModal && editingProject && (
-        <div className="modal-overlay active" onClick={() => setShowEditModal(false)}>
-          <div className="modal-content" role="dialog" aria-modal="true" aria-label="Productivity project" onClick={(e) => e.stopPropagation()}>
-            <h2>Edit Project: {editingProject.project_name}</h2>
-            <div className="form-group">
-              <label htmlFor="editWeeks">Total Weeks</label>
-              <input
-                type="number"
-                id="editWeeks"
-                value={editWeeks}
-                onChange={(e) => setEditWeeks(parseInt(e.target.value))}
-                min="1"
-                max="52"
-              />
-              <p className="project-field-note">
-                Current: {editingProject.total_weeks} weeks
-              </p>
-            </div>
-            <div className="modal-buttons">
-              <button 
-                type="button" 
-                className="btn btn-secondary"
-                onClick={() => setShowEditModal(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                type="button"
-                className="btn btn-primary"
-                onClick={handleEditSave}
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  return <div className="hcg-tools hcg-prod productivity-loss-container">
+    <div className="productivity-loss-header"><div><p className="prod-eyebrow">Productivity · Project library</p><h1>Your productivity projects.</h1><p className="projects-intro">Keep weekly inputs and results for Proactive and Retroactive analysis.</p></div><div className="header-buttons"><button type="button" className="btn btn-primary" onClick={() => { setCreateError(''); setShowCreate(true); }} disabled={creating}>+ New project</button><button type="button" className="btn btn-secondary" onClick={() => navigate('/')}>Workspace</button></div></div>
+    <div className="productivity-loss-content"><div className="user-info"><span><span className="project-owner-label">Workspace</span>{user?.username}</span><span>{projects.length} projects</span></div>
+      {error && <div role="alert" className="pa-message pa-error">{error} <button type="button" className="btn btn-small" onClick={reload} disabled={loading}>Reload list</button></div>}
+      {loading ? <p className="loading" role="status">Loading productivity projects…</p> : projects.length === 0 && !error ? <div className="no-projects"><h2>A place for your next analysis.</h2><p>Create a project, choose its duration and select the productivity factors that apply.</p><button type="button" className="btn btn-primary" onClick={() => setShowCreate(true)}>Create project</button></div> : projects.length > 0 && <div className="projects-container" tabIndex={0} role="region" aria-label="Productivity project list"><table className="projects-table"><thead><tr><th scope="col">Project</th>{user?.role === 'admin' && <th scope="col">Owner</th>}<th scope="col">Duration</th><th scope="col">Proactive loss</th><th scope="col">Retroactive loss</th><th scope="col">Updated</th><th scope="col">Actions</th></tr></thead><tbody>{projects.map(project => {
+        const id = project.project_id || project.id;
+        return <tr key={id}><td className="project-name">{project.project_name}</td>{user?.role === 'admin' && <td>{project.username}</td>}<td>{project.total_weeks} weeks</td><td className="loss-value">{loss(project.total_proactive_loss)} hrs</td><td className="loss-value">{loss(project.total_retroactive_loss)} hrs</td><td>{date(project.updated_at || project.created_at)}</td><td><div className="action-buttons"><button type="button" className="btn btn-primary btn-small" onClick={() => open(id)} disabled={deleting !== null}>Open analysis</button><button type="button" className="btn btn-danger btn-small" onClick={() => remove(project)} disabled={deleting !== null}>{deleting === id ? 'Deleting…' : 'Delete'}</button></div></td></tr>;
+      })}</tbody></table></div>}
     </div>
-  );
-};
+    {showCreate && <CreateDialog creating={creating} onClose={() => !creating && setShowCreate(false)} onSubmit={create} name={name} setName={setName} weekCount={weekCount} setWeekCount={setWeekCount} error={createError} />}
+  </div>;
+}
 
-export default ProductivityLossList;
+function CreateDialog({ creating, onClose, onSubmit, name, setName, weekCount, setWeekCount, error }) {
+  const dialog = useRef(null);
+  useEffect(() => { dialog.current?.showModal(); }, []);
+  return <dialog ref={dialog} className="pl-create-dialog" aria-labelledby="pl-create-title" onCancel={event => { event.preventDefault(); if (!creating) onClose(); }}><h2 id="pl-create-title">New productivity project</h2><form onSubmit={onSubmit}><div className="form-group"><label htmlFor="pl-project-name">Project name</label><input id="pl-project-name" autoFocus required maxLength={255} value={name} onChange={event => setName(event.target.value)} disabled={creating} /></div><div className="form-group"><label htmlFor="pl-project-weeks">Project duration (weeks)</label><input id="pl-project-weeks" type="number" min="1" max="52" step="1" required value={weekCount} onChange={event => setWeekCount(event.target.value)} disabled={creating} /></div>{error && <p role="alert" className="pa-message pa-error">{error}</p>}<div className="modal-buttons"><button type="button" className="btn btn-secondary" onClick={onClose} disabled={creating}>Cancel</button><button type="submit" className="btn btn-primary" disabled={creating}>{creating ? 'Creating…' : 'Create project'}</button></div></form></dialog>;
+}
