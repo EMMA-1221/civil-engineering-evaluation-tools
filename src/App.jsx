@@ -1,17 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { HashRouter, Routes, Route, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ProductivityProvider, AuthProvider, useAuth } from "./Productivitycontext";
-import BidList from "./pages/BidList.jsx";
-import BidDetail from "./pages/BidDetail.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import ProTool from "./pages/ProTool.jsx";
-import Factors from "./pages/Factors.jsx";
-import ProductivityAnalysis from "./pages/ProductivityAnalysis.jsx";
-import ProductivityLossList from "./pages/Productivitylosslist.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Icon from "./components/Icon.jsx";
 import "./design-system.css";
+
+const BidList = lazy(() => import("./pages/BidList.jsx"));
+const BidDetail = lazy(() => import("./pages/BidDetail.jsx"));
+const ProTool = lazy(() => import("./pages/ProTool.jsx"));
+const Factors = lazy(() => import("./pages/Factors.jsx"));
+const ProductivityAnalysis = lazy(() => import("./pages/ProductivityAnalysis.jsx"));
+const ProductivityLossList = lazy(() => import("./pages/Productivitylosslist.jsx"));
 
 export default function App() {
   return <HashRouter><AuthProvider><ProductivityProvider><AppContent /></ProductivityProvider></AuthProvider></HashRouter>;
@@ -54,6 +55,7 @@ function AppContent() {
         </nav>
       </header>
       <main id="hcg-main" className="hcg-main" tabIndex={-1}>
+        <Suspense fallback={<div className="hcg-route-loader" role="status"><span className="hcg-route-spinner" /><p>Opening your workspace…</p></div>}>
         <Routes>
           <Route path="/" element={protectedPage(<Home />)} />
           <Route path="/login" element={<Login />} />
@@ -68,6 +70,7 @@ function AppContent() {
           <Route path="/productivity-losses" element={protectedPage(<ProductivityLossList />)} />
           <Route path="*" element={<div className="hcg-not-found"><span className="hcg-eyebrow">Page not found</span><h1>Let’s find your way back.</h1><Link className="hcg-button" to="/">Return to workspace<Icon name="arrow-right" /></Link></div>} />
         </Routes>
+        </Suspense>
       </main>
       <footer className="hcg-site-footer"><span>© {new Date().getFullYear()} HCG WAY</span><span>Civil & Environmental Engineering<span className="hcg-footer-separator"> / </span>UW–Madison</span></footer>
     </div>
